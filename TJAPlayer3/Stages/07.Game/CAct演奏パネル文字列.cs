@@ -243,7 +243,7 @@ namespace TJAPlayer3
             if (TJAPlayer3.stage演奏ドラム画面.actDan.IsAnimating) return 0;
 			if( !base.b活性化してない && !this.bMute )
 			{
-				this.ct進行用.t進行Loop();
+				//this.ct進行用.t進行Loop();
                 if( this.bFirst )
                 {
                     this.ct進行用.n現在の値 = 300;

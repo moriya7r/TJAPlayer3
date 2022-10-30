@@ -98,12 +98,12 @@ namespace TJAPlayer3
                             if (this.Rainbow1P[f].Counter.n現在の値 < 82)
                             {
                                 int nRectX = ((this.Rainbow1P[f].Counter.n現在の値 * 920) / 85);
-                                TJAPlayer3.Tx.Effects_Rainbow.t2D描画(TJAPlayer3.app.Device, 360, -100, new Rectangle(0, 0, nRectX, 410));
+                                TJAPlayer3.Tx.Effects_Rainbow.t2D描画(TJAPlayer3.app.Device, 360, -100+300, new Rectangle(0, 0, nRectX, 410));
                             }
                             else if (this.Rainbow1P[f].Counter.n現在の値 >= 82)
                             {
                                 int nRectX = (((this.Rainbow1P[f].Counter.n現在の値 - 82) * 920) / 85);
-                                TJAPlayer3.Tx.Effects_Rainbow.t2D描画(TJAPlayer3.app.Device, 360 + nRectX, -100, new Rectangle(nRectX, 0, 920 - nRectX, 410));
+                                TJAPlayer3.Tx.Effects_Rainbow.t2D描画(TJAPlayer3.app.Device, 360 + nRectX, -100+300, new Rectangle(nRectX, 0, 920 - nRectX, 410));
                             }
 
                         }
