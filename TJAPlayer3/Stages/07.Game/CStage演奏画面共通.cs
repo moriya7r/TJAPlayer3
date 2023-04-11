@@ -1254,10 +1254,13 @@ namespace TJAPlayer3
                     this.actBalloon.ct風船アニメ[player] = new CCounter(0, 9, 14, TJAPlayer3.Timer);
                 }
                 this.eRollState = E連打State.balloon;
-                pChip.nRollCount++;
-                this.n風船残り[ player ]--;
+                if (TJAPlayer3.ConfigIni.bAutoBalloon)
+                {
+                    pChip.nRollCount++;
+                    this.n風船残り[ player ]--;
 
-                this.n合計連打数[player]++; //  成績発表の連打数に風船を含めるように (AioiLight)
+                    this.n合計連打数[player]++; //  成績発表の連打数に風船を含めるように (AioiLight)
+                }
                 //分岐のための処理。実装してない。
 
                 //赤か青かの分岐
@@ -1294,15 +1297,17 @@ namespace TJAPlayer3
                 }
                 else
                 {
-                    if(pChip.bGOGOTIME && !TJAPlayer3.ConfigIni.ShinuchiMode)
-                    {
-                        this.actScore.Add(E楽器パート.TAIKO, this.bIsAutoPlay, 360L, player);
-                    } else
-                    {
-                        this.actScore.Add(E楽器パート.TAIKO, this.bIsAutoPlay, 300L, player);
+                    if (TJAPlayer3.ConfigIni.bAutoBalloon) {
+                        if (pChip.bGOGOTIME && !TJAPlayer3.ConfigIni.ShinuchiMode)
+                        {
+                            this.actScore.Add(E楽器パート.TAIKO, this.bIsAutoPlay, 360L, player);
+                        } else
+                        {
+                            this.actScore.Add(E楽器パート.TAIKO, this.bIsAutoPlay, 300L, player);
+                        }
+                        //CDTXMania.Skin.soundRed.t再生する();
+                        this.soundRed?.t再生を開始する();
                     }
-                    //CDTXMania.Skin.soundRed.t再生する();
-                    this.soundRed?.t再生を開始する();
                 }
                 //TJAPlayer3.stage演奏ドラム画面.actTaikoLaneFlash.PlayerLane[player].Start(PlayerLane.FlashType.Hit);
             }
@@ -1448,17 +1453,24 @@ namespace TJAPlayer3
                             {
                                 if( pChip.nBalloon != 0 )
                                 {
-                                    if( CSound管理.rc演奏用タイマ.n現在時刻ms > ( pChip.n発声時刻ms + ( ( pChip.nノーツ終了時刻ms - pChip.n発声時刻ms ) / pChip.nBalloon ) * pChip.nRollCount ) )
+                                    if (TJAPlayer3.ConfigIni.bAutoBalloon)
                                     {
-                                        if( this.nHand[ nPlayer ] == 0 )
-                                            this.nHand[ nPlayer ]++;
-                                        else
-                                            this.nHand[ nPlayer ] = 0;
+                                        if (CSound管理.rc演奏用タイマ.n現在時刻ms > (pChip.n発声時刻ms + ((pChip.nノーツ終了時刻ms - pChip.n発声時刻ms) / pChip.nBalloon) * pChip.nRollCount))
+                                        {
+                                            if (this.nHand[nPlayer] == 0)
+                                                this.nHand[nPlayer]++;
+                                            else
+                                                this.nHand[nPlayer] = 0;
 
-                                        TJAPlayer3.stage演奏ドラム画面.actTaikoLaneFlash.PlayerLane[nPlayer].Start(PlayerLane.FlashType.Red);
-                                        TJAPlayer3.stage演奏ドラム画面.actMtaiko.tMtaikoEvent( pChip.nチャンネル番号, this.nHand[ nPlayer ], nPlayer );
-                                
-                                        this.tBalloonProcess( pChip, CSound管理.rc演奏用タイマ.n現在時刻ms, nPlayer );
+                                            TJAPlayer3.stage演奏ドラム画面.actTaikoLaneFlash.PlayerLane[nPlayer].Start(PlayerLane.FlashType.Red);
+                                            TJAPlayer3.stage演奏ドラム画面.actMtaiko.tMtaikoEvent(pChip.nチャンネル番号, this.nHand[nPlayer], nPlayer);
+
+                                            this.tBalloonProcess(pChip, CSound管理.rc演奏用タイマ.n現在時刻ms, nPlayer);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        this.tBalloonProcess(pChip, CSound管理.rc演奏用タイマ.n現在時刻ms, nPlayer);
                                     }
                                 }
                             }

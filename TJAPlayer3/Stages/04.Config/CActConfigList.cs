@@ -598,6 +598,11 @@ namespace TJAPlayer3
 				"To play both Taiko\n" +
 				" automatically." );
 			this.list項目リスト.Add( this.iTaikoAutoRoll );
+
+			this.iTaikoAutoBalloon = new CItemToggle("AUTO Balloon", TJAPlayer3.ConfigIni.bAutoBalloon,
+				"OFFにするとAUTOが風船を\n" +
+				"叩かなくなります。");
+			this.list項目リスト.Add(this.iTaikoAutoBalloon);
 			#endregion
 
 			this.iDrumsScrollSpeed = new CItemInteger( "ScrollSpeed", 0, 0x7cf, TJAPlayer3.ConfigIni.n譜面スクロール速度.Drums,
@@ -2197,7 +2202,8 @@ namespace TJAPlayer3
         private CItemToggle iTaikoAutoPlay;
         private CItemToggle iTaikoAutoPlay2P;
         private CItemToggle iTaikoAutoRoll;
-        private CItemToggle iTaikoBranchGuide;
+		private CItemToggle iTaikoAutoBalloon;
+		private CItemToggle iTaikoBranchGuide;
         private CItemList iTaikoDefaultCourse; //2017.01.30 DD デフォルトでカーソルをあわせる難易度
         private CItemList iTaikoScoreMode;
         private CItemToggle iTaikoHispeedRandom;
@@ -2392,6 +2398,7 @@ namespace TJAPlayer3
             TJAPlayer3.ConfigIni.b太鼓パートAutoPlay = this.iTaikoAutoPlay.bON;
             TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P = this.iTaikoAutoPlay2P.bON;
             TJAPlayer3.ConfigIni.bAuto先生の連打 = this.iTaikoAutoRoll.bON;
+			TJAPlayer3.ConfigIni.bAutoBalloon = this.iTaikoAutoBalloon.bON;
 
 			TJAPlayer3.ConfigIni.n譜面スクロール速度.Drums = this.iDrumsScrollSpeed.n現在の値;
             //CDTXMania.ConfigIni.bドラムコンボ表示 = this.iDrumsComboDisp.bON;
