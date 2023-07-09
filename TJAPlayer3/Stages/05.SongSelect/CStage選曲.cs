@@ -1017,31 +1017,30 @@ namespace TJAPlayer3
             int nGenre = 8;
             switch( strジャンル )
             {
+                case "ポップス":
+                    nGenre = 1;
+                    break;
                 case "アニメ":
                     nGenre = 2;
                     break;
-                case "J-POP":
-                    nGenre = 1;
-                    break;
-                case "ゲームミュージック":
-                    nGenre = 3;
-                    break;
-                case "ナムコオリジナル":
-                    nGenre = 4;
-                    break;
-                case "クラシック":
-                    nGenre = 5;
-                    break;
-                case "どうよう":
-                    nGenre = 7;
+                case "ネットミュージック":
+                    nGenre = 8;
                     break;
                 case "バラエティ":
                     nGenre = 6;
                     break;
-                case "ボーカロイド":
-                case "VOCALOID":
-                    nGenre = 8;
+                case "クラシック":
+                    nGenre = 5;
                     break;
+                case "ゲームミュージック":
+                    nGenre = 3;
+                    break;
+                case "フリーミュージック":
+                    nGenre = 4;
+                    break;
+                //case "どうよう":
+                //    nGenre = 7;
+                //    break;
                 default:
                     nGenre = 0;
                     break;

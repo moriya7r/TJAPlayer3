@@ -32,22 +32,21 @@
         {
             switch (strジャンル)
             {
-                case "J-POP":
+                case "ポップス":
                     return 0;
                 case "アニメ":
                     return 1;
-                case "ボーカロイド":
-                case "VOCALOID":
+                case "ネットミュージック":
                     return 2;
-                case "どうよう":
-                    return 3;
+                //case "どうよう":
+                //    return 3;
                 case "バラエティ":
                     return 4;
                 case "クラシック":
                     return 5;
                 case "ゲームミュージック":
                     return 6;
-                case "ナムコオリジナル":
+                case "フリーミュージック":
                     return 7;
                 default:
                     return 8;

@@ -92,38 +92,38 @@ namespace TJAPlayer3
 				}
                 if( !string.IsNullOrEmpty(genreName) )
                 {
-                    if(genreName.Equals( "アニメ" ) )
+                    if (genreName.Equals("ポップス"))
+                    {
+                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Pops");
+                    }
+                    else if (genreName.Equals("アニメ"))
                     {
                         this.txGENRE = TJAPlayer3.Tx.TxCGen("Anime");
                     }
-                    else if(genreName.Equals( "J-POP" ) )
+                    else if (genreName.Equals("ネットミュージック"))
                     {
-                        this.txGENRE = TJAPlayer3.Tx.TxCGen("J-POP");
+                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Internet");
                     }
-                    else if(genreName.Equals( "ゲームミュージック" ) )
-                    {
-                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Game");
-                    }
-                    else if(genreName.Equals( "ナムコオリジナル" ) )
-                    {
-                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Namco");
-                    }
-                    else if(genreName.Equals( "クラシック" ) )
-                    {
-                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Classic");
-                    }
-                    else if(genreName.Equals( "どうよう" ) )
-                    {
-                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Child");
-                    }
-                    else if(genreName.Equals( "バラエティ" ) )
+                    else if (genreName.Equals("バラエティ"))
                     {
                         this.txGENRE = TJAPlayer3.Tx.TxCGen("Variety");
                     }
-                    else if(genreName.Equals( "ボーカロイド" ) || genreName.Equals( "VOCALOID" ) )
+                    else if (genreName.Equals("クラシック"))
                     {
-                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Vocaloid");
+                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Classic");
                     }
+                    else if (genreName.Equals("ゲームミュージック"))
+                    {
+                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Game");
+                    }
+                    else if (genreName.Equals("フリーミュージック"))
+                    {
+                        this.txGENRE = TJAPlayer3.Tx.TxCGen("Free");
+                    }
+                    //else if (genreName.Equals("どうよう"))
+                    //{
+                    //    this.txGENRE = TJAPlayer3.Tx.TxCGen("Child");
+                    //}
                     else
                     {
                         using (var bmpDummy = new Bitmap( 1, 1 ))

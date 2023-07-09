@@ -1938,10 +1938,10 @@ namespace TJAPlayer3
 
 			switch( strジャンル )
             {
-                case "J-POP":
-				    #region [ J-POP ]
-    				//-----------------
-	    			if( TJAPlayer3.Tx.SongSelect_Bar_Genre[1] != null )
+                case "ポップス":
+                    #region [ ポップス ]
+                    //-----------------
+                    if ( TJAPlayer3.Tx.SongSelect_Bar_Genre[1] != null )
                         TJAPlayer3.Tx.SongSelect_Bar_Genre[1].t2D描画(TJAPlayer3.app.Device, x, y );
 	    			//-----------------
 		    		#endregion
@@ -1962,43 +1962,42 @@ namespace TJAPlayer3
 	    			//-----------------
 		    		#endregion
                     break;
-                case "ナムコオリジナル":
-				    #region [ ナムコオリジナル ]
-    				//-----------------
-	    			if(TJAPlayer3.Tx.SongSelect_Bar_Genre[4] != null )
+                case "フリーミュージック":
+                    #region [ フリーミュージック ]
+                    //-----------------
+                    if (TJAPlayer3.Tx.SongSelect_Bar_Genre[4] != null )
                         TJAPlayer3.Tx.SongSelect_Bar_Genre[4].t2D描画( TJAPlayer3.app.Device, x, y );
 	    			//-----------------
 		    		#endregion
                     break;
                 case "クラシック":
-				    #region [ クラシック ]
-    				//-----------------
-	    			if(TJAPlayer3.Tx.SongSelect_Bar_Genre[5] != null )
+                    #region [ クラシック ]
+                    //-----------------
+                    if (TJAPlayer3.Tx.SongSelect_Bar_Genre[5] != null )
                         TJAPlayer3.Tx.SongSelect_Bar_Genre[5].t2D描画( TJAPlayer3.app.Device, x, y );
 	    			//-----------------
 		    		#endregion
                     break;
                 case "バラエティ":
-				    #region [ バラエティ ]
-    				//-----------------
-	    			if(TJAPlayer3.Tx.SongSelect_Bar_Genre[6] != null )
+                    #region [ バラエティ ]
+                    //-----------------
+                    if (TJAPlayer3.Tx.SongSelect_Bar_Genre[6] != null )
                         TJAPlayer3.Tx.SongSelect_Bar_Genre[6].t2D描画( TJAPlayer3.app.Device, x, y );
 	    			//-----------------
 		    		#endregion
                     break;
-                case "どうよう":
-				    #region [ どうよう ]
-    				//-----------------
-	    			if(TJAPlayer3.Tx.SongSelect_Bar_Genre[7] != null )
-                        TJAPlayer3.Tx.SongSelect_Bar_Genre[7].t2D描画( TJAPlayer3.app.Device, x, y );
-	    			//-----------------
-		    		#endregion
+        //        case "どうよう":
+				    //#region [ どうよう ]
+    				////-----------------
+	    			//if(TJAPlayer3.Tx.SongSelect_Bar_Genre[7] != null )
+        //                TJAPlayer3.Tx.SongSelect_Bar_Genre[7].t2D描画( TJAPlayer3.app.Device, x, y );
+	    			////-----------------
+		    		//#endregion
                     break;
-                case "ボーカロイド":
-                case "VOCALOID":
-				    #region [ ボカロ ]
-    				//-----------------
-	    			if(TJAPlayer3.Tx.SongSelect_Bar_Genre[8] != null )
+                case "ネットミュージック":
+                    #region [ ネットミュージック ]
+                    //-----------------
+                    if (TJAPlayer3.Tx.SongSelect_Bar_Genre[8] != null )
                         TJAPlayer3.Tx.SongSelect_Bar_Genre[8].t2D描画( TJAPlayer3.app.Device, x, y );
 	    			//-----------------
 		    		#endregion
@@ -2023,32 +2022,31 @@ namespace TJAPlayer3
 		}
         private int nStrジャンルtoNum( string strジャンル )
         {
-            int nGenre = 8;
-            switch( strジャンル )
+            int nGenre;
+            switch ( strジャンル )
             {
                 case "アニメ":
                     nGenre = 0;
                     break;
-                case "J-POP":
+                case "ポップス":
                     nGenre = 1;
                     break;
                 case "ゲームミュージック":
                     nGenre = 2;
                     break;
-                case "ナムコオリジナル":
+                case "フリーミュージック":
                     nGenre = 3;
                     break;
                 case "クラシック":
                     nGenre = 4;
                     break;
-                case "どうよう":
-                    nGenre = 5;
-                    break;
+                //case "どうよう":
+                //    nGenre = 5;
+                //    break;
                 case "バラエティ":
                     nGenre = 6;
                     break;
-                case "ボーカロイド":
-                case "VOCALOID":
+                case "ネットミュージック":
                     nGenre = 7;
                     break;
                 default:
