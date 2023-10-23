@@ -831,7 +831,7 @@ namespace TJAPlayer3
         }
         protected override void t進行描画_BPM文字列()
         {
-            t進行描画_BPM文字列(40, 645);
+            t進行描画_BPM文字列(30, 645);
         }
         protected override void t進行描画_演奏情報()
         {
