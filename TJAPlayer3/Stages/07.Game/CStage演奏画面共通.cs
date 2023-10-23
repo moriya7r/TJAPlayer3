@@ -3056,7 +3056,8 @@ namespace TJAPlayer3
         protected abstract void t進行描画_BPM文字列();
         protected void t進行描画_BPM文字列(int x, int y)
         {
-            if (txBPMTitle != null && txBPM != null) {
+            if (txBPMTitle != null && txBPM != null)
+            {
                 // "BPM: "文字を表示
                 txBPMTitle.t2D描画(TJAPlayer3.app.Device, x, y);
                 int ix = x + txBPMTitle.szテクスチャサイズ.Width - 54;
@@ -3103,7 +3104,7 @@ namespace TJAPlayer3
                 }
 
                 // "0～9"と"."の文字のテクスチャを生成
-                txBPM = new CTexture[12];
+                txBPM = new CTexture[11];
                 for (int i = 0; i < 10; i++)
                 {
                     using (var bmp = pff.DrawPrivateFont($"{i}", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
@@ -3115,12 +3116,8 @@ namespace TJAPlayer3
                 {
                     txBPM[10] = TJAPlayer3.tテクスチャの生成(bmp);
                 }
-                using (var bmp = pff.DrawPrivateFont(" ", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
-                {
-                    txBPM[11] = TJAPlayer3.tテクスチャの生成(bmp);
-                }
             }
-            catch{}
+            catch { }
         }
 
         protected void t進行描画_ゲージ()
