@@ -3095,7 +3095,7 @@ namespace TJAPlayer3
             try
             {
                 // フォントを取得
-                var pff = new CPrivateFastFont(new FontFamily("Jost*"), 32);
+                var pff = new CPrivateFastFont(new FontFamily("Jost* Medium"), 32, FontStyle.Regular);
 
                 // "BPM: "文字のテクスチャを生成
                 using (var bmp = pff.DrawPrivateFont("BPM: ", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))

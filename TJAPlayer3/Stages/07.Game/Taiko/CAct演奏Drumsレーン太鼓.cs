@@ -547,15 +547,15 @@ namespace TJAPlayer3
                             {
                                 case 0:
                                     TJAPlayer3.Tx.Lane_Text[0].Opacity = 255;
-                                    TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 192);
+                                    TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300);
                                     break;
                                 case 1:
                                     TJAPlayer3.Tx.Lane_Text[1].Opacity = 255;
-                                    TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 192);
+                                    TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300);
                                     break;
                                 case 2:
                                     TJAPlayer3.Tx.Lane_Text[2].Opacity = 255;
-                                    TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 192);
+                                    TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300);
                                     break;
                             }
                         }
@@ -567,15 +567,15 @@ namespace TJAPlayer3
                             //普通→玄人
                             if (this.stBranch[i].nBefore == 0 && this.stBranch[i].nAfter == 1)
                             {
-                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 192 - this.stBranch[i].nY座標);
-                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 212 - this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300 - this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 212 + 300 - this.stBranch[i].nY座標);
                                 TJAPlayer3.Tx.Lane_Text[0].Opacity = this.stBranch[i].nBranchレイヤー透明度;
                             }
                             //普通→達人
                             if (this.stBranch[i].nBefore == 0 && this.stBranch[i].nAfter == 2)
                             {
-                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 192 - this.stBranch[i].nY座標);
-                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 212 - this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300 - this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 212 + 300 - this.stBranch[i].nY座標);
                                 TJAPlayer3.Tx.Lane_Text[0].Opacity = this.stBranch[i].nBranchレイヤー透明度;
                             }
                             #endregion
@@ -583,30 +583,30 @@ namespace TJAPlayer3
                             //玄人→達人
                             if (this.stBranch[i].nBefore == 1 && this.stBranch[i].nAfter == 2)
                             {
-                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 192 - this.stBranch[i].nY座標);
-                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 212 - this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300 - this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 212 + 300 - this.stBranch[i].nY座標);
                                 TJAPlayer3.Tx.Lane_Text[1].Opacity = this.stBranch[i].nBranchレイヤー透明度;
                             }
                             #endregion
                             #region[ 玄人譜面_レベルダウン ]
                             if (this.stBranch[i].nBefore == 1 && this.stBranch[i].nAfter == 0)
                             {
-                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 192 + this.stBranch[i].nY座標);
-                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 168 + this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300 + this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 168 + 300 + this.stBranch[i].nY座標);
                                 TJAPlayer3.Tx.Lane_Text[1].Opacity = this.stBranch[i].nBranchレイヤー透明度;
                             }
                             #endregion
                             #region[ 達人譜面_レベルダウン ]
                             if (this.stBranch[i].nBefore == 2 && this.stBranch[i].nAfter == 0)
                             {
-                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 192 + this.stBranch[i].nY座標);
-                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 168 + this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300 + this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[0].t2D描画(TJAPlayer3.app.Device, 333, 168 + 300 + this.stBranch[i].nY座標);
                                 TJAPlayer3.Tx.Lane_Text[2].Opacity = this.stBranch[i].nBranchレイヤー透明度;
                             }
                             if (this.stBranch[i].nBefore == 2 && this.stBranch[i].nAfter == 1)
                             {
-                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 192 + this.stBranch[i].nY座標);
-                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 168 + this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[2].t2D描画(TJAPlayer3.app.Device, 333, 192 + 300 + this.stBranch[i].nY座標);
+                                TJAPlayer3.Tx.Lane_Text[1].t2D描画(TJAPlayer3.app.Device, 333, 168 + 300 + this.stBranch[i].nY座標);
                                 TJAPlayer3.Tx.Lane_Text[2].Opacity = this.stBranch[i].nBranchレイヤー透明度;
                             }
                             #endregion
