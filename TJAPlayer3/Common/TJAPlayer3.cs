@@ -1739,9 +1739,9 @@ for (int i = 0; i < 3; i++) {
         /// 曲名テクスチャの縮小倍率を返す。
         /// </summary>
         /// <param name="cTexture">曲名テクスチャ。</param>
-        /// <param name="samePixel">等倍で表示するピクセル数の最大値(デフォルト値:645)</param>
+        /// <param name="samePixel">等倍で表示するピクセル数の最大値(デフォルト値:800)</param>
         /// <returns>曲名テクスチャの縮小倍率。そのテクスチャがnullならば一倍(1f)を返す。</returns>
-        public static float GetSongNameXScaling(ref CTexture cTexture, int samePixel = 660)
+        public static float GetSongNameXScaling(ref CTexture cTexture, int samePixel = 800)
         {
             if (cTexture == null) return 1f;
             float scalingRate = (float)samePixel / (float)cTexture.szテクスチャサイズ.Width;

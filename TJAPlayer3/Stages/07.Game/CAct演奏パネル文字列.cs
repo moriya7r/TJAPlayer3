@@ -255,8 +255,8 @@ namespace TJAPlayer3
                 {
                     if (this.txMusicName != null)
                     {
-                        float fRate = 660.0f / this.txMusicName.szテクスチャサイズ.Width;
-                        if (this.txMusicName.szテクスチャサイズ.Width <= 660.0f)
+                        float fRate = 800.0f / this.txMusicName.szテクスチャサイズ.Width;
+                        if (this.txMusicName.szテクスチャサイズ.Width <= 800.0f)
                             fRate = 1.0f;
                         this.txMusicName.vc拡大縮小倍率.X = fRate;
                         if (TJAPlayer3.Skin.Game_MusicName_ReferencePoint == CSkin.ReferencePoint.Center)

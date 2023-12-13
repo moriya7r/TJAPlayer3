@@ -453,7 +453,8 @@ namespace TJAPlayer3
 
                 if (!TJAPlayer3.ConfigIni.bNoInfo)
                     this.t進行描画_パネル文字列();
-                this.t進行描画_BPM文字列();
+                if (TJAPlayer3.Skin.Skin_BPMDisplay)
+                    this.t進行描画_BPM文字列();
 
                 this.actLaneTaiko.On進行描画();
                 //this.t進行描画_レーン();
@@ -828,10 +829,6 @@ namespace TJAPlayer3
         protected override void t進行描画_パネル文字列()
         {
             base.t進行描画_パネル文字列(336, 427);
-        }
-        protected override void t進行描画_BPM文字列()
-        {
-            t進行描画_BPM文字列(30, 645);
         }
         protected override void t進行描画_演奏情報()
         {

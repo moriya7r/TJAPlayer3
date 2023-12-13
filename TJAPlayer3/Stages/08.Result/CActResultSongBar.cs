@@ -54,7 +54,7 @@ namespace TJAPlayer3
 
 		    {
 		        this.txMusicName = TJAPlayer3.tテクスチャの生成(bmpSongTitle, false);
-		        txMusicName.vc拡大縮小倍率.X = TJAPlayer3.GetSongNameXScaling(ref txMusicName);
+		        txMusicName.vc拡大縮小倍率.X = TJAPlayer3.GetSongNameXScaling(ref txMusicName, 960);
 		    }
 
 		    using (var bmpStageText = pfStageText.DrawPrivateFont(TJAPlayer3.Skin.Game_StageText, TJAPlayer3.Skin.Result_StageText_ForeColor, TJAPlayer3.Skin.Result_StageText_BackColor))

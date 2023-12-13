@@ -7,6 +7,8 @@ using FDK;
 using FDK.ExtensionMethods;
 using TJAPlayer3;
 using System.Web.Management;
+using System.Drawing.Text;
+using System.Linq;
 
 namespace TJAPlayer3
 {
@@ -3053,14 +3055,17 @@ namespace TJAPlayer3
 
             this.actPanel.SetPanelString(panelString, TJAPlayer3.stage選曲.str確定された曲のジャンル, TJAPlayer3.Skin.Game_StageText);
         }
-        protected abstract void t進行描画_BPM文字列();
-        protected void t進行描画_BPM文字列(int x, int y)
+        protected void t進行描画_BPM文字列()
         {
+            var x = 30;
+            var y = 645;
+            var width = 54;
+
             if (txBPMTitle != null && txBPM != null)
             {
                 // "BPM: "文字を表示
                 txBPMTitle.t2D描画(TJAPlayer3.app.Device, x, y);
-                int ix = x + txBPMTitle.szテクスチャサイズ.Width - 54;
+                int ix = x + txBPMTitle.szテクスチャサイズ.Width - width;
 
                 // BPM値を1文字ずつ表示
                 // 3桁右寄せスペース埋め+小数があれば表示、4桁以上は全部表示して左寄せ
@@ -3072,18 +3077,18 @@ namespace TJAPlayer3
                     if (result)
                     {
                         txBPM[num].t2D描画(TJAPlayer3.app.Device, ix, y);
-                        ix += txBPM[0].szテクスチャサイズ.Width - 54;
+                        ix += txBPM[0].szテクスチャサイズ.Width - width;
                     }
                     else
                     {
                         if (ch == '.')
                         {
                             txBPM[10].t2D描画(TJAPlayer3.app.Device, ix, y);
-                            ix += txBPM[10].szテクスチャサイズ.Width - 54;
+                            ix += txBPM[10].szテクスチャサイズ.Width - width;
                         }
                         else
                         {
-                            ix += txBPM[0].szテクスチャサイズ.Width - 54;
+                            ix += txBPM[0].szテクスチャサイズ.Width - width;
                         }
                     }
                 }
@@ -3091,33 +3096,35 @@ namespace TJAPlayer3
         }
         protected void tBPM文字列の設定()
         {
-            // フォントが無い環境を考慮しとりあえずtry-catchで回避
-            try
+            // フォントを選択
+            string bpmfont = "Jost* Medium";
+            if (!new InstalledFontCollection().Families.Any(x => x.Name == bpmfont))
             {
-                // フォントを取得
-                var pff = new CPrivateFastFont(new FontFamily("Jost* Medium"), 32, FontStyle.Regular);
+                bpmfont = "ＭＳ Ｐゴシック";
+            }
 
-                // "BPM: "文字のテクスチャを生成
-                using (var bmp = pff.DrawPrivateFont("BPM: ", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
-                {
-                    txBPMTitle = TJAPlayer3.tテクスチャの生成(bmp);
-                }
+            // フォントを取得
+            var pff = new CPrivateFastFont(new FontFamily(bpmfont), 32, FontStyle.Regular);
 
-                // "0～9"と"."の文字のテクスチャを生成
-                txBPM = new CTexture[11];
-                for (int i = 0; i < 10; i++)
+            // "BPM: "文字のテクスチャを生成
+            using (var bmp = pff.DrawPrivateFont("BPM: ", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
+            {
+                txBPMTitle = TJAPlayer3.tテクスチャの生成(bmp);
+            }
+
+            // "0～9"と"."の文字のテクスチャを生成
+            txBPM = new CTexture[11];
+            for (int i = 0; i < 10; i++)
+            {
+                using (var bmp = pff.DrawPrivateFont($"{i}", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
                 {
-                    using (var bmp = pff.DrawPrivateFont($"{i}", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
-                    {
-                        txBPM[i] = TJAPlayer3.tテクスチャの生成(bmp);
-                    }
-                }
-                using (var bmp = pff.DrawPrivateFont(".", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
-                {
-                    txBPM[10] = TJAPlayer3.tテクスチャの生成(bmp);
+                    txBPM[i] = TJAPlayer3.tテクスチャの生成(bmp);
                 }
             }
-            catch { }
+            using (var bmp = pff.DrawPrivateFont(".", TJAPlayer3.Skin.Game_MusicName_ForeColor, TJAPlayer3.Skin.Game_MusicName_BackColor))
+            {
+                txBPM[10] = TJAPlayer3.tテクスチャの生成(bmp);
+            }
         }
 
         protected void t進行描画_ゲージ()
