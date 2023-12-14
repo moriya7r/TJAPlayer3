@@ -44,7 +44,7 @@ namespace TJAPlayer3
                 ST文字位置 stScore文字位置 = new ST文字位置()
                 {
                     ch = chScore文字[i],
-                    pt = new Point(30 * i, 0)
+                    pt = new Point(TJAPlayer3.Skin.nResultScoreSize * i, 0)
                 };
                 stScore文字位置Array[i] = stScore文字位置;
             }
@@ -377,7 +377,7 @@ namespace TJAPlayer3
                 {
                     if (this.stScoreFont[i].ch == ch)
                     {
-                        Rectangle rectangle = new Rectangle(this.stScoreFont[i].pt.X, 0, 30, 40);
+                        Rectangle rectangle = new Rectangle(this.stScoreFont[i].pt.X, 0, TJAPlayer3.Skin.nResultScoreSize, 40);
                         if (TJAPlayer3.Tx.Result_Score_Number != null)
                         {
                             TJAPlayer3.Tx.Result_Score_Number.t2D描画(TJAPlayer3.app.Device, x, y, rectangle);
@@ -385,7 +385,7 @@ namespace TJAPlayer3
                         break;
                     }
                 }
-                x += 30;
+                x += TJAPlayer3.Skin.nResultScoreSize;
             }
         }
         //-----------------

@@ -985,6 +985,10 @@ namespace TJAPlayer3
                             {
                                 this.nResultScoreTextP1Y = C変換.n値を文字列から取得して返す(strParam, 249);
                             }
+                            else if (strCommand == "ResultScoreSize")
+                            {
+                                this.nResultScoreSize = C変換.n値を文字列から取得して返す(strParam, 24);
+                            }
                             else if (strCommand == "ResultScoreP1X")
                             {
                                 this.nResultScoreP1X = C変換.n値を文字列から取得して返す(strParam, 582);
@@ -2457,6 +2461,7 @@ namespace TJAPlayer3
         public int nResultPanelP2Y = 75;
         public int nResultScoreTextP1X = 753;
         public int nResultScoreTextP1Y = 249;
+        public int nResultScoreSize = 24;
         public int nResultScoreP1X = 582;
         public int nResultScoreP1Y = 252;
         public int nResultJudge1_P1X = 815;
