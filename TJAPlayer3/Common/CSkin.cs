@@ -1710,6 +1710,22 @@ namespace TJAPlayer3
                                     Game_Taiko_Combo_Text_Size[i] = int.Parse(strSplit[i]);
                                 }
                             }
+                            else if (strCommand == "Game_CourseSymbol_X")
+                            {
+                                string[] strSplit = strParam.Split(',');
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    Game_CourseSymbol_X[i] = int.Parse(strSplit[i]);
+                                }
+                            }
+                            else if (strCommand == "Game_CourseSymbol_Y")
+                            {
+                                string[] strSplit = strParam.Split(',');
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    Game_CourseSymbol_Y[i] = int.Parse(strSplit[i]);
+                                }
+                            }
                             else if (strCommand == nameof(Game_Taiko_Combo_Ex_IsJumping))
                             {
                                 Game_Taiko_Combo_Ex_IsJumping = C変換.bONorOFF(strParam[0]);
