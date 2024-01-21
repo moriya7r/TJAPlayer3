@@ -947,6 +947,14 @@ namespace TJAPlayer3
                             {
                                 this.nJudgePointY[1] = C変換.n値を文字列から取得して返す(strParam, this.nJudgePointY[1]);
                             }
+                            else if (strCommand == "LevelUpDownY")
+                            {
+                                string[] strSplit = strParam.Split(',');
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    this.fLevelUpDownY[i] = float.Parse(strSplit[i]);
+                                }
+                            }
 
                             else if (strCommand == "DiffDispMode")
                             {
@@ -2437,6 +2445,9 @@ namespace TJAPlayer3
         //中心座標指定
         public int[] nJudgePointX = new int[] { 413, 413, 413, 413 };
         public int[] nJudgePointY = new int[] { 256, 433, 0, 0 };
+
+        //レベルアップ・レベルダウンY座標
+        public float[] fLevelUpDownY = new float[] { 206, -206, 0, 0 };
 
         //フィールド背景画像
         //ScrollField座標への追従設定が可能。

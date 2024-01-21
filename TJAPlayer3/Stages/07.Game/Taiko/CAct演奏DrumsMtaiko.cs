@@ -206,7 +206,7 @@ namespace TJAPlayer3
                     //2017.08.21 kairera0467 t3D描画に変更。
                     float fScale = 1.0f;
                     int nAlpha = 255;
-                    float[] fY = new float[] { 206, -206, 0, 0 };
+                    float[] fY = TJAPlayer3.Skin.fLevelUpDownY;
                     if (this.ctレベルアップダウン[i].n現在の値 >= 0 && this.ctレベルアップダウン[i].n現在の値 <= 20)
                     {
                         nAlpha = 60;
