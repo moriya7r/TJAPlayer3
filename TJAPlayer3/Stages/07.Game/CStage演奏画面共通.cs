@@ -739,6 +739,7 @@ namespace TJAPlayer3
 
 		protected CSound soundRed;
 		protected CSound soundBlue;
+		protected CSound soundBalloon;
 		protected CSound soundAdlib;
 
 
@@ -1274,7 +1275,7 @@ namespace TJAPlayer3
 				if (pChip.nBalloon == pChip.nRollCount)
 				{
 					//ﾊﾟｧｰﾝ
-					TJAPlayer3.Skin.soundBalloon.t再生する();
+					this.soundBalloon?.t再生を開始する();
 					//CDTXMania.stage演奏ドラム画面.actChipFireTaiko.Start( 3, player ); //ここで飛ばす。飛ばされるのは大音符のみ。
 					TJAPlayer3.stage演奏ドラム画面.FlyingNotes.Start(3, player);
 					TJAPlayer3.stage演奏ドラム画面.Rainbow.Start(player);
