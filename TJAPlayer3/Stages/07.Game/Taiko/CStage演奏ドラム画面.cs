@@ -320,7 +320,7 @@ namespace TJAPlayer3
 				{
 					this.soundRed = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\dong.ogg"), ESoundGroup.SoundEffect);
 					this.soundBlue = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\ka.ogg"), ESoundGroup.SoundEffect);
-					this.soundBalloon = TJAPlayer3.Sound管理.tサウンドを生成する(@"Sounds\Taiko\balloon.ogg", ESoundGroup.SoundEffect);
+					this.soundBalloon = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\balloon.ogg"), ESoundGroup.SoundEffect);
 					this.soundAdlib = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\Adlib.ogg"), ESoundGroup.SoundEffect);
 				}
 
