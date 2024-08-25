@@ -1,12 +1,12 @@
-﻿using System;
+﻿using FDK;
+using FDK.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.IO;
 using System.Diagnostics;
-using FDK;
-using FDK.ExtensionMethods;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace TJAPlayer3
 {
@@ -733,6 +733,7 @@ namespace TJAPlayer3
 		public bool b太鼓パートAutoPlay;
 		public bool b太鼓パートAutoPlay2P; //2017.08.16 kairera0467 マルチプレイ対応
 		public bool bAuto先生の連打;
+		public bool bAuto連打色変更;
 		public bool bAutoBalloon;
 		public bool b大音符判定;
 		public int n両手判定の待ち時間;
@@ -1775,6 +1776,7 @@ namespace TJAPlayer3
 			sw.WriteLine("Taiko={0}", this.b太鼓パートAutoPlay ? 1 : 0);
 			sw.WriteLine("Taiko2P={0}", this.b太鼓パートAutoPlay2P ? 1 : 0);
 			sw.WriteLine("TaikoAutoRoll={0}", this.bAuto先生の連打 ? 1 : 0);
+			sw.WriteLine("TaikoAutoRollColorChange={0}", this.bAuto連打色変更 ? 1 : 0);
 			sw.WriteLine("TaikoAutoBalloon={0}", this.bAutoBalloon ? 1 : 0);
 			sw.WriteLine();
 			sw.WriteLine(";-------------------");
@@ -1833,11 +1835,11 @@ namespace TJAPlayer3
 			sw.WriteLine("Dark={0}", (int)this.eDark);
 			sw.WriteLine();
 			/*
-            sw.WriteLine( "; スクロール方法(※β版)" );
-            sw.WriteLine( "; (0:通常, 1:BMSCROLL, 2:HSSCROLL)" );
-            sw.WriteLine( "ScrollMode={0}", (int)this.eScrollMode );
-            sw.WriteLine();
-            */
+			sw.WriteLine( "; スクロール方法(※β版)" );
+			sw.WriteLine( "; (0:通常, 1:BMSCROLL, 2:HSSCROLL)" );
+			sw.WriteLine( "ScrollMode={0}", (int)this.eScrollMode );
+			sw.WriteLine();
+			*/
 			#region [ SUDDEN ]
 			sw.WriteLine("; ドラムSUDDENモード(0:OFF, 1:ON)");
 			sw.WriteLine("DrumsSudden={0}", this.bSudden.Drums ? 1 : 0);
@@ -2495,6 +2497,10 @@ namespace TJAPlayer3
 										{
 											this.bAuto先生の連打 = C変換.bONorOFF(str4[0]);
 										}
+										else if (str3.Equals("TaikoAutoRollColorChange"))
+										{
+											this.bAuto連打色変更 = C変換.bONorOFF(str4[0]);
+										}
 										else if (str3.Equals("TaikoAutoBalloon"))
 										{
 											this.bAutoBalloon = C変換.bONorOFF(str4[0]);
@@ -2598,7 +2604,7 @@ namespace TJAPlayer3
 											{
 												this.bGraph.Drums = C変換.bONorOFF( str4[ 0 ] );
 											}
-                                            */
+											*/
 											#region [ Sudden ]
 											else if (str3.Equals("DrumsSudden"))
 											{

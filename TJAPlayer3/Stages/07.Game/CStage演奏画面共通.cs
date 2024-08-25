@@ -1,14 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Drawing;
-using System.Diagnostics;
 using FDK;
 using FDK.ExtensionMethods;
-using TJAPlayer3;
-using System.Web.Management;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace TJAPlayer3
 {
@@ -1423,8 +1421,7 @@ namespace TJAPlayer3
 										TJAPlayer3.stage演奏ドラム画面.FlyingNotes.Start(pChip.nチャンネル番号 == 0x15 ? 1 : 3, nPlayer, true);
 										TJAPlayer3.stage演奏ドラム画面.actMtaiko.tMtaikoEvent(pChip.nチャンネル番号, this.nHand[nPlayer], nPlayer);
 
-
-										this.tRollProcess(pChip, CSound管理.rc演奏用タイマ.n現在時刻ms, 1, 0, 0, nPlayer);
+										this.tRollProcess(pChip, CSound管理.rc演奏用タイマ.n現在時刻ms, 1, TJAPlayer3.ConfigIni.bAuto連打色変更 ? 1 : 0, 0, nPlayer);
 									}
 								}
 							}
@@ -1787,22 +1784,22 @@ namespace TJAPlayer3
 							}
 
 							/*
-                                if (CDTXMania.stage演奏ドラム画面.actGauge.db現在のゲージ値[0] <= 100)
-                                {
-                                    this.actChara.アクションタイマーリセット();
-                                    this.actChara.ctキャラクターアクション_魂MAX = new CCounter(0, CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_魂MAX枚数 - 1, (dbUnit / CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_魂MAX枚数) * 2, CSound管理.rc演奏用タイマ);
-                                    this.actChara.ctキャラクターアクション_魂MAX.t進行db();
-                                    this.actChara.ctキャラクターアクション_魂MAX.db現在の値 = 0D;
-                                    this.actChara.bマイどんアクション中 = true;
-                                } else if (CDTXMania.stage演奏ドラム画面.actGauge.db現在のゲージ値[0] <= 80)
-                                {
-                                    this.actChara.アクションタイマーリセット();
-                                    this.actChara.ctキャラクターアクション_ノルマ = new CCounter(0, CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_ノルマ枚数 - 1, (dbUnit / CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_ノルマ枚数) * 2, CSound管理.rc演奏用タイマ);
-                                    this.actChara.ctキャラクターアクション_ノルマ.t進行db();
-                                    this.actChara.ctキャラクターアクション_ノルマ.db現在の値 = 0D;
-                                    this.actChara.bマイどんアクション中 = true;
-                                }
-                            */
+								if (CDTXMania.stage演奏ドラム画面.actGauge.db現在のゲージ値[0] <= 100)
+								{
+									this.actChara.アクションタイマーリセット();
+									this.actChara.ctキャラクターアクション_魂MAX = new CCounter(0, CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_魂MAX枚数 - 1, (dbUnit / CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_魂MAX枚数) * 2, CSound管理.rc演奏用タイマ);
+									this.actChara.ctキャラクターアクション_魂MAX.t進行db();
+									this.actChara.ctキャラクターアクション_魂MAX.db現在の値 = 0D;
+									this.actChara.bマイどんアクション中 = true;
+								} else if (CDTXMania.stage演奏ドラム画面.actGauge.db現在のゲージ値[0] <= 80)
+								{
+									this.actChara.アクションタイマーリセット();
+									this.actChara.ctキャラクターアクション_ノルマ = new CCounter(0, CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_ノルマ枚数 - 1, (dbUnit / CDTXMania.stage演奏ドラム画面.actChara.nキャラクターアクション_ノルマ枚数) * 2, CSound管理.rc演奏用タイマ);
+									this.actChara.ctキャラクターアクション_ノルマ.t進行db();
+									this.actChara.ctキャラクターアクション_ノルマ.db現在の値 = 0D;
+									this.actChara.bマイどんアクション中 = true;
+								}
+							*/
 						}
 						if (this.actCombo.n現在のコンボ数[0] == 50 || this.actCombo.n現在のコンボ数[1] == 50)
 						{
@@ -2452,14 +2449,14 @@ namespace TJAPlayer3
 			}
 			#endregion
 #if DEBUG
-            if(player == 0)
-            {
-                TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, pastChip != null ? pastChip.ToString() : "null");
-                TJAPlayer3.act文字コンソール.tPrint(0, 20, C文字コンソール.Eフォント種別.白, futureChip != null ? futureChip.ToString() : "null");
-                TJAPlayer3.act文字コンソール.tPrint(0, 40, C文字コンソール.Eフォント種別.白, nearestChip != null ? nearestChip.ToString() : "null");
-                TJAPlayer3.act文字コンソール.tPrint(0, 60, C文字コンソール.Eフォント種別.白, startPosision.ToString());
+			if(player == 0)
+			{
+				TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, pastChip != null ? pastChip.ToString() : "null");
+				TJAPlayer3.act文字コンソール.tPrint(0, 20, C文字コンソール.Eフォント種別.白, futureChip != null ? futureChip.ToString() : "null");
+				TJAPlayer3.act文字コンソール.tPrint(0, 40, C文字コンソール.Eフォント種別.白, nearestChip != null ? nearestChip.ToString() : "null");
+				TJAPlayer3.act文字コンソール.tPrint(0, 60, C文字コンソール.Eフォント種別.白, startPosision.ToString());
 
-            }
+			}
 #endif
 			return nearestChip;
 		}
@@ -2601,14 +2598,14 @@ namespace TJAPlayer3
 			}
 			#endregion
 #if DEBUG
-            if(player == 0)
-            {
-                TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, pastChip != null ? pastChip.ToString() : "null");
-                TJAPlayer3.act文字コンソール.tPrint(0, 20, C文字コンソール.Eフォント種別.白, futureChip != null ? futureChip.ToString() : "null");
-                TJAPlayer3.act文字コンソール.tPrint(0, 40, C文字コンソール.Eフォント種別.白, nearestChip != null ? nearestChip.ToString() : "null");
-                TJAPlayer3.act文字コンソール.tPrint(0, 60, C文字コンソール.Eフォント種別.白, startPosision.ToString());
+			if(player == 0)
+			{
+				TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, pastChip != null ? pastChip.ToString() : "null");
+				TJAPlayer3.act文字コンソール.tPrint(0, 20, C文字コンソール.Eフォント種別.白, futureChip != null ? futureChip.ToString() : "null");
+				TJAPlayer3.act文字コンソール.tPrint(0, 40, C文字コンソール.Eフォント種別.白, nearestChip != null ? nearestChip.ToString() : "null");
+				TJAPlayer3.act文字コンソール.tPrint(0, 60, C文字コンソール.Eフォント種別.白, startPosision.ToString());
 
-            }
+			}
 #endif
 			return nearestChip;
 		}
@@ -2947,20 +2944,20 @@ namespace TJAPlayer3
 					}
 				}
 #if DEBUG
-                if ( keyboard.bキーが押された( (int) SlimDX.DirectInput.Key.F6 ) )
-                {
-                    if( TJAPlayer3.ConfigIni.b太鼓パートAutoPlay == false )
-                        TJAPlayer3.ConfigIni.b太鼓パートAutoPlay = true;
-                    else
-                        TJAPlayer3.ConfigIni.b太鼓パートAutoPlay = false;
-                }
-                if ( keyboard.bキーが押された( (int) SlimDX.DirectInput.Key.F7 ) )
-                {
-                    if(TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P == false )
-                        TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P = true;
-                    else
-                        TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P = false;
-                }
+				if ( keyboard.bキーが押された( (int) SlimDX.DirectInput.Key.F6 ) )
+				{
+					if( TJAPlayer3.ConfigIni.b太鼓パートAutoPlay == false )
+						TJAPlayer3.ConfigIni.b太鼓パートAutoPlay = true;
+					else
+						TJAPlayer3.ConfigIni.b太鼓パートAutoPlay = false;
+				}
+				if ( keyboard.bキーが押された( (int) SlimDX.DirectInput.Key.F7 ) )
+				{
+					if(TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P == false )
+						TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P = true;
+					else
+						TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P = false;
+				}
 #endif
 			}
 			if (!this.actPauseMenu.bIsActivePopupMenu && this.bPAUSE && ((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED)) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_フェードアウト))
@@ -3757,13 +3754,13 @@ namespace TJAPlayer3
 								//this.actChara.ctモブモーション = new CCounter(0, this.actChara.arモブモーション番号.Length - 1, (dbUnit) / this.actChara.arモブモーション番号.Length, CSound管理.rc演奏用タイマ);
 								//#if C_82D982F182AF82CD82A282AF82A2
 								/*
-                                 * for( int dancer = 0; dancer < 5; dancer++ )
-                                    this.actDancer.st投げ上げ[ dancer ].ct進行 = new CCounter( 0, this.actDancer.arモーション番号_登場.Length - 1, dbUnit / this.actDancer.arモーション番号_登場.Length, CSound管理.rc演奏用タイマ );
+								 * for( int dancer = 0; dancer < 5; dancer++ )
+									this.actDancer.st投げ上げ[ dancer ].ct進行 = new CCounter( 0, this.actDancer.arモーション番号_登場.Length - 1, dbUnit / this.actDancer.arモーション番号_登場.Length, CSound管理.rc演奏用タイマ );
 
-                                this.actDancer.ct通常モーション = new CCounter( 0, this.actDancer.arモーション番号_通常.Length - 1, ( dbUnit * 4 ) / this.actDancer.arモーション番号_通常.Length, CSound管理.rc演奏用タイマ );
-                                this.actDancer.ctモブ = new CCounter( 1.0, 16.0, (int)((60.0 / bpm / 16.0 ) * 1000 ), CSound管理.rc演奏用タイマ );
+								this.actDancer.ct通常モーション = new CCounter( 0, this.actDancer.arモーション番号_通常.Length - 1, ( dbUnit * 4 ) / this.actDancer.arモーション番号_通常.Length, CSound管理.rc演奏用タイマ );
+								this.actDancer.ctモブ = new CCounter( 1.0, 16.0, (int)((60.0 / bpm / 16.0 ) * 1000 ), CSound管理.rc演奏用タイマ );
 //#endif
-                               */
+							   */
 							}
 
 						}
@@ -4672,47 +4669,47 @@ namespace TJAPlayer3
 			//}
 
 			/*long num = FDK.CSound管理.rc演奏用タイマ.n現在時刻;
-            if( num < this.ct制御タイマ )
-            {
-                this.ct制御タイマ = num;
-            }
-            while( ( num - this.ct制御タイマ ) >= 1000 )
-            {
-                if( this.n現在の音符の顔番号 == 0 )
-                {
-                    this.n現在の音符の顔番号 = 1;
-                }
-                else if( this.n現在の音符の顔番号 == 1 )
-                {
-                    this.n現在の音符の顔番号 = 0;
-                }
+			if( num < this.ct制御タイマ )
+			{
+				this.ct制御タイマ = num;
+			}
+			while( ( num - this.ct制御タイマ ) >= 1000 )
+			{
+				if( this.n現在の音符の顔番号 == 0 )
+				{
+					this.n現在の音符の顔番号 = 1;
+				}
+				else if( this.n現在の音符の顔番号 == 1 )
+				{
+					this.n現在の音符の顔番号 = 0;
+				}
 
-                if( this.actCombo.n現在のコンボ数.P1 < 50 )
-                {
-                    this.ct制御タイマ += 500;
-                }
-                else if(this.actCombo.n現在のコンボ数.P1 >= 50 && this.actCombo.n現在のコンボ数.P1 < 150)
-                {
-                    this.ct制御タイマ += 400;
-                }
-                else if( this.actCombo.n現在のコンボ数.P1 >= 150 && this.actCombo.n現在のコンボ数.P1 < 250 )
-                {
-                    this.ct制御タイマ += 300;
-                }
-                else if( this.actCombo.n現在のコンボ数.P1 >= 250 && this.actCombo.n現在のコンボ数.P1 < 300 )
-                {
-                    this.ct制御タイマ += 200;
-                }
-                else if( this.actCombo.n現在のコンボ数.P1 >= 300 )
-                {
-                    this.ct制御タイマ += 80;
-                }
-                else
-                {
-                    this.ct制御タイマ += 500;
-                }
+				if( this.actCombo.n現在のコンボ数.P1 < 50 )
+				{
+					this.ct制御タイマ += 500;
+				}
+				else if(this.actCombo.n現在のコンボ数.P1 >= 50 && this.actCombo.n現在のコンボ数.P1 < 150)
+				{
+					this.ct制御タイマ += 400;
+				}
+				else if( this.actCombo.n現在のコンボ数.P1 >= 150 && this.actCombo.n現在のコンボ数.P1 < 250 )
+				{
+					this.ct制御タイマ += 300;
+				}
+				else if( this.actCombo.n現在のコンボ数.P1 >= 250 && this.actCombo.n現在のコンボ数.P1 < 300 )
+				{
+					this.ct制御タイマ += 200;
+				}
+				else if( this.actCombo.n現在のコンボ数.P1 >= 300 )
+				{
+					this.ct制御タイマ += 80;
+				}
+				else
+				{
+					this.ct制御タイマ += 500;
+				}
 
-            }*/
+			}*/
 
 			//if ( this.actChara.ctゴーゴーモーション != null )
 			//{

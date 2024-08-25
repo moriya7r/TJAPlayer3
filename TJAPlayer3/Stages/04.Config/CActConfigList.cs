@@ -1,11 +1,8 @@
+using FDK;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Drawing;
 using System.Threading;
-using SlimDX;
-using FDK;
 
 namespace TJAPlayer3
 {
@@ -602,6 +599,11 @@ namespace TJAPlayer3
 				"To play both Taiko\n" +
 				" automatically.");
 			this.list項目リスト.Add(this.iTaikoAutoRoll);
+
+			this.iTaikoAutoRollColorChange = new CItemToggle("AUTO Roll ColorChange", TJAPlayer3.ConfigIni.bAuto連打色変更,
+				"ONにするとAUTOの黄色連打が\n" +
+				"縁連打になります。");
+			this.list項目リスト.Add(this.iTaikoAutoRollColorChange);
 
 			this.iTaikoAutoBalloon = new CItemToggle("AUTO Balloon", TJAPlayer3.ConfigIni.bAutoBalloon,
 				"OFFにするとAUTOが風船を\n" +
@@ -2206,6 +2208,7 @@ namespace TJAPlayer3
 		private CItemToggle iTaikoAutoPlay;
 		private CItemToggle iTaikoAutoPlay2P;
 		private CItemToggle iTaikoAutoRoll;
+		private CItemToggle iTaikoAutoRollColorChange;
 		private CItemToggle iTaikoAutoBalloon;
 		private CItemToggle iTaikoBranchGuide;
 		private CItemList iTaikoDefaultCourse; //2017.01.30 DD デフォルトでカーソルをあわせる難易度
@@ -2404,6 +2407,7 @@ namespace TJAPlayer3
 			TJAPlayer3.ConfigIni.b太鼓パートAutoPlay = this.iTaikoAutoPlay.bON;
 			TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P = this.iTaikoAutoPlay2P.bON;
 			TJAPlayer3.ConfigIni.bAuto先生の連打 = this.iTaikoAutoRoll.bON;
+			TJAPlayer3.ConfigIni.bAuto連打色変更 = this.iTaikoAutoRollColorChange.bON;
 			TJAPlayer3.ConfigIni.bAutoBalloon = this.iTaikoAutoBalloon.bON;
 
 			TJAPlayer3.ConfigIni.n譜面スクロール速度.Drums = this.iDrumsScrollSpeed.n現在の値;
