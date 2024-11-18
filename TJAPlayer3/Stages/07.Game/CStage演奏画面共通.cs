@@ -3068,7 +3068,7 @@ namespace TJAPlayer3
 				// BPM値を1文字ずつ表示
 				// 3桁右寄せスペース埋め+小数があれば表示、4桁以上は全部表示して左寄せ
 				double bpm = TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM;
-				string sBPM = ((int)bpm).ToString("#").PadLeft(3) + (bpm - (int)bpm).ToString(".###");
+				string sBPM = ((int)bpm).ToString("0").PadLeft(3) + (bpm - (int)bpm).ToString(".###");
 				foreach (char ch in sBPM.ToCharArray())
 				{
 					var result = int.TryParse(ch.ToString(), out int num);
