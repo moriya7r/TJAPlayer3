@@ -1646,25 +1646,23 @@ namespace TJAPlayer3
 			int nノート末端座標 = 0;
 			int n先頭発声位置 = 0;
 
-			// 2016.11.2 kairera0467
-			// 黄連打音符を赤くするやつの実装方法メモ
-			//前面を黄色、背面を変色後にしたものを重ねて、打数に応じて前面の透明度を操作すれば、色を操作できるはず。
-			//ただしテクスチャのαチャンネル部分が太くなるなどのデメリットが出る。備えよう。
-
-			#region[ 作り直したもの ]
 			if (pChip.b可視)
 			{
 				if (pChip.nチャンネル番号 >= 0x15 && pChip.nチャンネル番号 <= 0x18)
 				{
 					if (pChip.nノーツ出現時刻ms != 0 && (CSound管理.rc演奏用タイマ.n現在時刻ms < pChip.n発声時刻ms - pChip.nノーツ出現時刻ms))
+					{
 						pChip.bShow = false;
+					}
 					else if (pChip.nノーツ出現時刻ms != 0 && pChip.nノーツ移動開始時刻ms != 0)
+					{
 						pChip.bShow = true;
+					}
 
 					if (pChip.nノーツ移動開始時刻ms != 0 && (CSound管理.rc演奏用タイマ.n現在時刻ms < pChip.n発声時刻ms - pChip.nノーツ移動開始時刻ms))
 					{
-						nノート座標 = (int)((((pChip.n発声時刻ms) - (pChip.n発声時刻ms - pChip.nノーツ移動開始時刻ms)) * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度.Drums + 1.5)) / 628.7);
-						nノート末端座標 = (int)(((pChip.nノーツ終了時刻ms - (pChip.n発声時刻ms - pChip.nノーツ移動開始時刻ms)) * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度.Drums + 1.5)) / 628.7);
+						nノート座標 = (int)((pChip.n発声時刻ms - (pChip.n発声時刻ms - pChip.nノーツ移動開始時刻ms)) * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度.Drums + 1.5) / 628.7);
+						nノート末端座標 = (int)((pChip.nノーツ終了時刻ms - (pChip.n発声時刻ms - pChip.nノーツ移動開始時刻ms)) * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度.Drums + 1.5) / 628.7);
 					}
 					else
 					{
@@ -1675,9 +1673,13 @@ namespace TJAPlayer3
 				if (pChip.nチャンネル番号 == 0x18)
 				{
 					if (pChip.nノーツ出現時刻ms != 0 && (CSound管理.rc演奏用タイマ.n現在時刻ms < n先頭発声位置 - pChip.nノーツ出現時刻ms))
+					{
 						pChip.bShow = false;
+					}
 					else
+					{
 						pChip.bShow = true;
+					}
 
 					CDTX.CChip cChip = null;
 					if (pChip.nノーツ移動開始時刻ms != 0) // n先頭発声位置 value is only used when this condition is met
@@ -1750,7 +1752,7 @@ namespace TJAPlayer3
 				//if( CDTXMania.ConfigIni.eScrollMode != EScrollMode.Normal )
 				x -= 10;
 
-				if ((1400 > x) && pChip.bShow)
+				if (((1400 > x) || (1400 > x末端)) && pChip.bShow)
 				{
 					if (TJAPlayer3.Tx.Notes != null)
 					{
@@ -1844,95 +1846,81 @@ namespace TJAPlayer3
 							pChip.RollDelay.n現在の値 = 0;
 						}
 
-						float f減少するカラー = 1.0f - ((0.95f / 100) * pChip.RollEffectLevel);
+						float f減少するカラー = 1.0f - (0.95f / 100 * pChip.RollEffectLevel);
 						var effectedColor = new Color4(1.0f, f減少するカラー, f減少するカラー);
 						var normalColor = new Color4(1.0f, 1.0f, 1.0f);
 						float f末端ノーツのテクスチャ位置調整 = 65f;
 
-						if (pChip.nチャンネル番号 == 0x15) //連打(小)
+						if (pChip.nチャンネル番号 == 0x15 || pChip.nチャンネル番号 == 0x16) //連打
 						{
-							int index = x末端 - x; //連打の距離
+							int body, end, head;
+							int semulti, sebody, seend, sehead;
+							int index = Math.Max(x, x末端) - Math.Min(x, x末端); //連打の距離
+							if (pChip.nチャンネル番号 == 0x15) // 小連打の定義
+							{
+								body = 781;
+								end = 910;
+								head = 650;
+								semulti = index - 44;
+								sebody = x <= x末端 ? x + 90 : x末端 + 80;
+								seend = x + 30;
+								sehead = x;
+							}
+							else // 大連打の定義
+							{
+								head = 1040;
+								body = 1171;
+								end = 1300;
+								semulti = index - 70;
+								sebody = x <= x末端 ? x + 116 : x末端 + 80;
+								seend = x + 56;
+								sehead = x - 2;
+							}
 							if (TJAPlayer3.ConfigIni.eSTEALTH != Eステルスモード.DORON)
 							{
-								#region[末端をテクスチャ側で中央に持ってくる場合の方式]
-
-								//CDTXMania.Tx.Notes.color4 = new Color4(1.0f, f減少するカラー, f減少するカラー);
-								//CDTXMania.Tx.Notes.vc拡大縮小倍率.X = (index - 65.0f + f末端ノーツのテクスチャ位置調整+1) / 128.0f;
-								//CDTXMania.Tx.Notes.t2D描画(CDTXMania.app.Device, x + 64, y, new Rectangle(781, 0, 128, 130));
-								//CDTXMania.Tx.Notes.vc拡大縮小倍率.X = 1.0f;
-								//CDTXMania.Tx.Notes.t2D描画(CDTXMania.app.Device, x末端, y, 0, new Rectangle(910, num9, 130, 130));
-								//CDTXMania.Tx.Notes.color4 = new Color4(1.0f, 1.0f, 1.0f); //先端シンボルは色を変えない
-								//CDTXMania.Tx.Notes.t2D描画(CDTXMania.app.Device, x, y, 0, new Rectangle(650, num9, 130, 130));
-
-								#endregion
-								#region[末端をテクスチャ側でつなげる場合の方式]
-
 								if (TJAPlayer3.Skin.Game_RollColorMode != CSkin.RollColorMode.None)
+								{
 									TJAPlayer3.Tx.Notes.color4 = effectedColor;
+								}
 								else
+								{
 									TJAPlayer3.Tx.Notes.color4 = normalColor;
-								TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = (index - 65.0f + f末端ノーツのテクスチャ位置調整 + 1) / 128.0f;
-								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x + 64, y, new Rectangle(781, 0, 128, 130));
-								TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = 1.0f;
-								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x末端 + f末端ノーツのテクスチャ位置調整, y, 0, new Rectangle(910, num9, 130, 130));
+								}
+								if (x <= x末端) // 通常の連打
+								{
+									// 連打胴体
+									TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = (index - 65.0f + f末端ノーツのテクスチャ位置調整 + 1) / 128.0f;
+									TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x + 64, y, new Rectangle(body, 0, 128, 130));
+									// 連打末端
+									TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = 1.0f;
+									TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x末端 + f末端ノーツのテクスチャ位置調整, y, 0, new Rectangle(end, num9, 130, 130));
+								}
+								else // 逆走連打
+								{
+									// 連打胴体
+									TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = (index - 65.0f + f末端ノーツのテクスチャ位置調整 + 1) / 128.0f;
+									TJAPlayer3.Tx.Notes.t2D左右反転描画(TJAPlayer3.app.Device, Math.Min(x, x末端) + 64, y, 0, new Rectangle(body, 0, 128, 130));
+									// 連打末端
+									TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = 1.0f;
+									TJAPlayer3.Tx.Notes.t2D左右反転描画(TJAPlayer3.app.Device, x末端 - f末端ノーツのテクスチャ位置調整, y, 0, new Rectangle(end, num9, 130, 130));
+								}
 								if (TJAPlayer3.Skin.Game_RollColorMode == CSkin.RollColorMode.All)
+								{
 									TJAPlayer3.Tx.Notes.color4 = effectedColor;
+								}
 								else
+								{
 									TJAPlayer3.Tx.Notes.color4 = normalColor;
-
-								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x, y, 0, new Rectangle(650, num9, 130, 130));
+								}
+								// 連打先頭
+								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x, y, 0, new Rectangle(head, num9, 130, 130));
 								TJAPlayer3.Tx.Notes.color4 = normalColor;
-								#endregion
 							}
-							TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = index - 44;
-							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 90, y + nSenotesY, new Rectangle(60, 240, 1, 30));
+							TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = semulti;
+							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, sebody, y + nSenotesY, new Rectangle(60, 240, 1, 30));
 							TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = 1.0f;
-							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 30, y + nSenotesY, new Rectangle(0, 240, 60, 30));
-							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x, y + nSenotesY, new Rectangle(0, 30 * pChip.nSenote, 136, 30));
-						}
-						if (pChip.nチャンネル番号 == 0x16)
-						{
-							int index = x末端 - x; //連打の距離
-
-							if (TJAPlayer3.ConfigIni.eSTEALTH != Eステルスモード.DORON)
-							{
-								#region[末端をテクスチャ側で中央に持ってくる場合の方式]
-
-								//CDTXMania.Tx.Notes.color4 = new Color4(1.0f, f減少するカラー, f減少するカラー);
-								//CDTXMania.Tx.Notes.vc拡大縮小倍率.X = (index - 65.0f + f末端ノーツのテクスチャ位置調整+1) / 128f;
-								//CDTXMania.Tx.Notes.t2D描画(CDTXMania.app.Device, x + 64, y, new Rectangle(1171, 0, 128, 130));
-								//CDTXMania.Tx.Notes.vc拡大縮小倍率.X = 1.0f;
-								//CDTXMania.Tx.Notes.t2D描画(CDTXMania.app.Device, x末端, y, 0, new Rectangle(1300, num9, 130, 130));
-								//CDTXMania.Tx.Notes.color4 = new Color4(1.0f, 1.0f, 1.0f); //先端シンボルは色を変えない
-								//CDTXMania.Tx.Notes.t2D描画(CDTXMania.app.Device, x, y, new Rectangle(1040, num9, 130, 130));
-
-								#endregion
-								#region[末端をテクスチャ側でつなげる場合の方式]
-
-								if (TJAPlayer3.Skin.Game_RollColorMode != CSkin.RollColorMode.None)
-									TJAPlayer3.Tx.Notes.color4 = effectedColor;
-								else
-									TJAPlayer3.Tx.Notes.color4 = normalColor;
-
-								TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = (index - 65 + f末端ノーツのテクスチャ位置調整 + 1) / 128f;
-								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x + 64, y, new Rectangle(1171, 0, 128, 130));
-
-								TJAPlayer3.Tx.Notes.vc拡大縮小倍率.X = 1.0f;
-								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x末端 + f末端ノーツのテクスチャ位置調整, y, 0, new Rectangle(1300, num9, 130, 130));
-								if (TJAPlayer3.Skin.Game_RollColorMode == CSkin.RollColorMode.All)
-									TJAPlayer3.Tx.Notes.color4 = effectedColor;
-								else
-									TJAPlayer3.Tx.Notes.color4 = normalColor;
-
-								TJAPlayer3.Tx.Notes.t2D描画(TJAPlayer3.app.Device, x, y, new Rectangle(1040, num9, 130, 130));
-								TJAPlayer3.Tx.Notes.color4 = normalColor;
-								#endregion
-							}
-							TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = index - 70;
-							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 116, y + nSenotesY, new Rectangle(60, 240, 1, 30));
-							TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = 1.0f;
-							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 56, y + nSenotesY, new Rectangle(0, 240, 60, 30));
-							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x - 2, y + nSenotesY, new Rectangle(0, 30 * pChip.nSenote, 136, 30));
+							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, seend, y + nSenotesY, new Rectangle(0, 240, 60, 30));
+							TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, sehead, y + nSenotesY, new Rectangle(0, 30 * pChip.nSenote, 136, 30));
 						}
 						if (pChip.nチャンネル番号 == 0x17)
 						{
@@ -1983,7 +1971,6 @@ namespace TJAPlayer3
 				if (pChip.nチャンネル番号 != 0x18 && (nPlayer == 0 ? TJAPlayer3.ConfigIni.b太鼓パートAutoPlay : TJAPlayer3.ConfigIni.b太鼓パートAutoPlay2P))
 					this.tチップのヒット処理(pChip.n発声時刻ms, pChip, E楽器パート.TAIKO, false, 0, nPlayer);
 			}
-			#endregion
 		}
 
 		protected override void t進行描画_チップ_ドラムス(CConfigIni configIni, ref CDTX dTX, ref CDTX.CChip pChip)

@@ -4128,7 +4128,7 @@ namespace TJAPlayer3
                                     chip.n連打音符State = nNowRoll;
                                     listChip[nNowRollCount].nノーツ終了位置 = (this.n現在の小節数 * 384) + ((384 * n) / n文字数);
                                     listChip[nNowRollCount].nノーツ終了時刻ms = (int)this.dbNowTime;
-                                    listChip[nNowRollCount].fBMSCROLLTime_end = (int)this.dbNowBMScollTime;
+                                    listChip[nNowRollCount].fBMSCROLLTime_end = (float)this.dbNowBMScollTime;
                                     //listChip[ nNowRollCount ].dbBPM = this.dbNowBPM;
                                     //listChip[ nNowRollCount ].dbSCROLL = this.dbNowSCROLL;
                                     nNowRoll = 0;
