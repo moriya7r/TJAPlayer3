@@ -3207,6 +3207,152 @@ namespace TJAPlayer3
 
 			float? play_bpm_time = null;
 
+			// 小節線だけ先(後の描画ほど上に来るので下に)に描画する
+			// この次のfor文をコピペして、小節線の処理だけ抽出
+			// そのため、次のfor文の小節線の描画処理部分をコメントアウトしている
+			for (int nCurrentTopChip = dTX.listChip.Count - 1; nCurrentTopChip > 0; nCurrentTopChip--)
+			{
+				CDTX.CChip pChip = dTX.listChip[nCurrentTopChip];
+				if (pChip.nチャンネル番号 != 0x50)
+				{
+					continue;
+				}
+				var time = pChip.n発声時刻ms - n現在時刻ms;
+				pChip.nバーからの距離dot.Drums = (int)(time * ScrollSpeedDrums);
+				pChip.nバーからの距離dot.Guitar = (int)(time * ScrollSpeedGuitar);
+				pChip.nバーからの距離dot.Bass = (int)(time * ScrollSpeedBass);
+				pChip.nバーからの距離dot.Taiko = (int)(time * pChip.dbBPM * pChip.dbSCROLL * (db現在の譜面スクロール速度.Drums + 1.5) / 628.7);
+				pChip.nバーからのノーツ末端距離dot.Drums = 0;
+				pChip.nバーからのノーツ末端距離dot.Guitar = 0;
+				pChip.nバーからのノーツ末端距離dot.Bass = 0;
+				if (pChip.nノーツ終了時刻ms != 0)
+					pChip.nバーからのノーツ末端距離dot.Taiko = (int)((pChip.nノーツ終了時刻ms - n現在時刻ms) * pChip.dbBPM * pChip.dbSCROLL * (db現在の譜面スクロール速度.Drums + 1.5) / 628.7);
+
+				if (configIni.eScrollMode == EScrollMode.BMSCROLL || configIni.eScrollMode == EScrollMode.HBSCROLL)
+				{
+					if (!play_bpm_time.HasValue)
+					{
+						play_bpm_time = this.GetNowPBMTime(dTX, 0);
+					}
+
+					var dbSCROLL = configIni.eScrollMode == EScrollMode.BMSCROLL ? 1.0 : pChip.dbSCROLL;
+
+					pChip.nバーからの距離dot.Taiko = (int)(((pChip.fBMSCROLLTime * NOTE_GAP) - (play_bpm_time * NOTE_GAP)) * dbSCROLL * (db現在の譜面スクロール速度.Drums + 1.5));
+					if (pChip.nノーツ終了時刻ms != 0)
+						pChip.nバーからのノーツ末端距離dot.Taiko = (int)(((pChip.fBMSCROLLTime_end * NOTE_GAP) - (play_bpm_time * NOTE_GAP)) * pChip.dbSCROLL * (db現在の譜面スクロール速度.Drums + 1.5));
+				}
+
+				int instIndex = (int)pChip.e楽器パート;
+
+				if (!pChip.bHit)
+				{
+					if (pChip.nチャンネル番号 >= 0x11 && pChip.nチャンネル番号 <= 0x14 || pChip.nチャンネル番号 == 0x1A || pChip.nチャンネル番号 == 0x1B)//|| pChip.nチャンネル番号 == 0x9A )
+					{
+						if ((pChip.n発声時刻ms + 120) < n現在時刻ms)
+						{
+							if (this.e指定時刻からChipのJUDGEを返す(n現在時刻ms, pChip) == E判定.Miss)
+							{
+								this.tチップのヒット処理(n現在時刻ms, pChip, E楽器パート.TAIKO, false, 0, nPlayer);
+								pChip.eNoteState = ENoteState.bad;
+							}
+						}
+					}
+				}
+
+				if (pChip.nバーからの距離dot[instIndex] < -150)
+				{
+					if (!(pChip.nチャンネル番号 >= 0x11 && pChip.nチャンネル番号 <= 0x14) || pChip.nチャンネル番号 == 0x1A || pChip.nチャンネル番号 == 0x1B)
+					{
+						pChip.bHit = true;
+					}
+				}
+
+				var cChipCurrentlyInProcess = chip現在処理中の連打チップ[nPlayer];
+				if (cChipCurrentlyInProcess != null && !cChipCurrentlyInProcess.bHit)
+				{
+					if (cChipCurrentlyInProcess.nチャンネル番号 >= 0x13 && cChipCurrentlyInProcess.nチャンネル番号 <= 0x15)
+					{
+						if ((cChipCurrentlyInProcess.nバーからの距離dot.Taiko < -500) && (cChipCurrentlyInProcess.n発声時刻ms <= n現在時刻ms && cChipCurrentlyInProcess.nノーツ終了時刻ms >= n現在時刻ms))
+						{
+							if (bAutoPlay)
+								this.tチップのヒット処理(n現在時刻ms, cChipCurrentlyInProcess, E楽器パート.TAIKO, false, 0, nPlayer);
+						}
+					}
+				}
+
+				if (pChip.nPlayerSide == nPlayer && pChip.n発声時刻ms >= n現在時刻ms)
+				{
+					NowProcessingChip[pChip.nPlayerSide] = nCurrentTopChip;
+				}
+
+				// switch文(0x50)の中身をコピペしたもの
+				{
+					if (!pChip.bHit && (pChip.nバーからの距離dot.Taiko < 0))
+					{
+						this.actChara.b演奏中 = true;
+						if (this.actPlayInfo.NowMeasure[nPlayer] == 0)
+						{
+							for (int i = 0; i < 2; i++)
+							{
+								ctChipAnime[i] = new CCounter(0, 3, 60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM * 1 / 4, CSound管理.rc演奏用タイマ);
+							}
+
+							if (TJAPlayer3.Skin.Game_Chara_Ptn_Normal != 0)
+							{
+								double dbPtn_Normal = (60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM) * TJAPlayer3.Skin.Game_Chara_Beat_Normal / this.actChara.arモーション番号.Length;
+								this.actChara.ctChara_Normal = new CCounter(0, this.actChara.arモーション番号.Length - 1, dbPtn_Normal, CSound管理.rc演奏用タイマ);
+							}
+							else
+							{
+								this.actChara.ctChara_Normal = new CCounter();
+							}
+							if (TJAPlayer3.Skin.Game_Chara_Ptn_Clear != 0)
+							{
+								double dbPtn_Clear = (60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM) * TJAPlayer3.Skin.Game_Chara_Beat_Clear / this.actChara.arクリアモーション番号.Length;
+								this.actChara.ctChara_Clear = new CCounter(0, this.actChara.arクリアモーション番号.Length - 1, dbPtn_Clear, CSound管理.rc演奏用タイマ);
+							}
+							else
+							{
+								this.actChara.ctChara_Clear = new CCounter();
+							}
+							if (TJAPlayer3.Skin.Game_Chara_Ptn_GoGo != 0)
+							{
+								double dbPtn_GoGo = (60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM) * TJAPlayer3.Skin.Game_Chara_Beat_GoGo / this.actChara.arゴーゴーモーション番号.Length;
+								this.actChara.ctChara_GoGo = new CCounter(0, this.actChara.arゴーゴーモーション番号.Length - 1, dbPtn_GoGo, CSound管理.rc演奏用タイマ);
+							}
+							else
+							{
+								this.actChara.ctChara_GoGo = new CCounter();
+							}
+							this.ct制御タイマ = new CCounter(0, 10, 500, CSound管理.rc演奏用タイマ);
+							if (TJAPlayer3.Skin.Game_Dancer_Ptn != 0)
+							{
+								double dbUnit_dancer = (((60 / (TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM))) / this.actDancer.ar踊り子モーション番号.Length);
+								this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayer3.Skin.Game_Dancer_Beat, CSound管理.rc演奏用タイマ);
+							}
+							else
+							{
+								this.actDancer.ct踊り子モーション = new CCounter();
+							}
+							if (TJAPlayer3.Skin.Game_Mob_Ptn != 0 && TJAPlayer3.Skin.Game_Mob_Beat > 0)
+							{
+								this.actMob.ctMob = new CCounter(1, 180, 60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM * TJAPlayer3.Skin.Game_Mob_Beat / 180, CSound管理.rc演奏用タイマ);
+								this.actMob.ctMobPtn = new CCounter(0, TJAPlayer3.Skin.Game_Mob_Ptn - 1, 60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM * TJAPlayer3.Skin.Game_Mob_Ptn_Beat / TJAPlayer3.Skin.Game_Mob_Ptn, CSound管理.rc演奏用タイマ);
+							}
+							else
+							{
+								this.actMob.ctMob = new CCounter();
+								this.actMob.ctMobPtn = new CCounter();
+							}
+							TJAPlayer3.stage演奏ドラム画面.PuchiChara.ChangeBPM(60.0 / TJAPlayer3.stage演奏ドラム画面.actPlayInfo.dbBPM);
+						}
+						actPlayInfo.NowMeasure[nPlayer] = pChip.n整数値_内部番号;
+						pChip.bHit = true;
+					}
+					this.t進行描画_チップ_小節線(configIni, ref dTX, ref pChip, nPlayer);
+				}
+			}
+
 			//for ( int nCurrentTopChip = this.n現在のトップChip; nCurrentTopChip < dTX.listChip.Count; nCurrentTopChip++ )
 			for (int nCurrentTopChip = dTX.listChip.Count - 1; nCurrentTopChip > 0; nCurrentTopChip--)
 			{
@@ -3460,6 +3606,7 @@ namespace TJAPlayer3
 					#endregion
 
 					#region [ 50: 小節線 ]
+					/*
 					case 0x50:  // 小節線
 						{
 							if (!pChip.bHit && (pChip.nバーからの距離dot.Taiko < 0))
@@ -3563,6 +3710,7 @@ namespace TJAPlayer3
 							this.t進行描画_チップ_小節線(configIni, ref dTX, ref pChip, nPlayer);
 							break;
 						}
+					*/
 					#endregion
 					#region [ 51: 拍線 ]
 					case 0x51:  // 拍線
