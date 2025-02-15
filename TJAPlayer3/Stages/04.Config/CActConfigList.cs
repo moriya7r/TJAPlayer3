@@ -611,7 +611,7 @@ namespace TJAPlayer3
 			this.list項目リスト.Add(this.iTaikoAutoBalloon);
 			#endregion
 
-			this.iDrumsScrollSpeed = new CItemInteger("ScrollSpeed", 0, 0x7cf, TJAPlayer3.ConfigIni.n譜面スクロール速度.Drums,
+			this.iDrumsScrollSpeed = new CItemInteger("ScrollSpeed", 0, 0x7cf, TJAPlayer3.ConfigIni.n譜面スクロール速度.Taiko,
 				"演奏時のドラム譜面のスクロールの\n" +
 				"速度を指定します。\n" +
 				"x0.5 ～ x1000.0 を指定可能です。",
@@ -2410,7 +2410,7 @@ namespace TJAPlayer3
 			TJAPlayer3.ConfigIni.bAuto連打色変更 = this.iTaikoAutoRollColorChange.bON;
 			TJAPlayer3.ConfigIni.bAutoBalloon = this.iTaikoAutoBalloon.bON;
 
-			TJAPlayer3.ConfigIni.n譜面スクロール速度.Drums = this.iDrumsScrollSpeed.n現在の値;
+			TJAPlayer3.ConfigIni.n譜面スクロール速度.Taiko = this.iDrumsScrollSpeed.n現在の値;
 			//CDTXMania.ConfigIni.bドラムコンボ表示 = this.iDrumsComboDisp.bON;
 			// "Sudden" || "Sud+Hid"
 			//CDTXMania.ConfigIni.bSudden.Drums = ( this.iDrumsSudHid.n現在選択されている項目番号 == 1 || this.iDrumsSudHid.n現在選択されている項目番号 == 3 ) ? true : false;

@@ -1318,7 +1318,7 @@ namespace TJAPlayer3
 			this.nInputAdjustTimeMs = 0;
 			this.nJudgeLinePosOffset = new STDGBVALUE<int>();   // #31602 2013.6.23 yyagi
 			this.e判定表示優先度 = E判定表示優先度.Chipより下;
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < Enum.GetValues(typeof(E楽器パート)).Length - 1; i++)
 			{
 				this.bSudden[i] = false;
 				this.bHidden[i] = false;
@@ -1874,7 +1874,7 @@ namespace TJAPlayer3
 			sw.WriteLine("DrumsTight={0}", this.bTight ? 1 : 0);
 			sw.WriteLine();
 			sw.WriteLine("; ドラム譜面スクロール速度(0:x0.5, 1:x1.0, 2:x1.5,…,1999:x1000.0)");
-			sw.WriteLine("DrumsScrollSpeed={0}", this.n譜面スクロール速度.Drums);
+			sw.WriteLine("DrumsScrollSpeed={0}", this.n譜面スクロール速度.Taiko);
 			sw.WriteLine();
 			sw.WriteLine("; 演奏速度(5～40)(→x5/20～x40/20)");
 			sw.WriteLine("PlaySpeed={0}", this.n演奏速度);
@@ -2641,7 +2641,7 @@ namespace TJAPlayer3
 											}
 											else if (str3.Equals("DrumsScrollSpeed"))
 											{
-												this.n譜面スクロール速度.Drums = C変換.n値を文字列から取得して範囲内に丸めて返す(str4, 0, 0x7cf, this.n譜面スクロール速度.Drums);
+												this.n譜面スクロール速度.Taiko = C変換.n値を文字列から取得して範囲内に丸めて返す(str4, 0, 0x7cf, this.n譜面スクロール速度.Taiko);
 											}
 											else if (str3.Equals("PlaySpeed"))
 											{
