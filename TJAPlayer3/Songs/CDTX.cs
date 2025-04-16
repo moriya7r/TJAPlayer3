@@ -1372,9 +1372,9 @@ namespace TJAPlayer3
 			//this.nScoreModeTmp = 1;
 			for (int y = 0; y < (int)Difficulty.Total; y++)
 			{
-				this.nScoreInit[0, y] = 300;
-				this.nScoreInit[1, y] = 1000;
-				this.nScoreDiff[y] = 120;
+				this.nScoreInit[0, y] = 400;
+				this.nScoreInit[1, y] = 400;
+				this.nScoreDiff[y] = 100;
 				this.b配点が指定されている[0, y] = false;
 				this.b配点が指定されている[1, y] = false;
 				this.b配点が指定されている[2, y] = false;
