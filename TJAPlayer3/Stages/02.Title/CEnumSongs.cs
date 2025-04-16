@@ -1,65 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.IO;
-using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
-using SlimDX;
-using SlimDX.Direct3D9;
-using FDK;
-using SampleFramework;
+using System.Threading;
 
 namespace TJAPlayer3
 {
-	internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得するクラス
-	{													// ファイルキャッシュ(songslist.db)からの取得と、ディスクからの取得を、この一つのクラスに集約。
+	internal class CEnumSongs                           // #27060 2011.2.7 yyagi 曲リストを取得するクラス
+	{                                                   // ファイルキャッシュ(songslist.db)からの取得と、ディスクからの取得を、この一つのクラスに集約。
 
-		public CSongs管理 Songs管理						// 曲の探索結果はこのSongs管理に読み込まれる
+		public CSongs管理 Songs管理                     // 曲の探索結果はこのSongs管理に読み込まれる
 		{
 			get;
 			private set;
 		}
 
-		public bool IsSongListEnumCompletelyDone		// 曲リスト探索と、実際の曲リストへの反映が完了した？
+		public bool IsSongListEnumCompletelyDone        // 曲リスト探索と、実際の曲リストへの反映が完了した？
 		{
 			get
 			{
-				return ( this.state == DTXEnumState.CompletelyDone );
+				return (this.state == DTXEnumState.CompletelyDone);
 			}
 		}
 		public bool IsEnumerating
 		{
 			get
 			{
-				if ( thDTXFileEnumerate == null )
+				if (thDTXFileEnumerate == null)
 				{
 					return false;
 				}
 				return thDTXFileEnumerate.IsAlive;
 			}
 		}
-		public bool IsSongListEnumerated				// 曲リスト探索が完了したが、実際の曲リストへの反映はまだ？
+		public bool IsSongListEnumerated                // 曲リスト探索が完了したが、実際の曲リストへの反映はまだ？
 		{
 			get
 			{
-				return ( this.state == DTXEnumState.Enumeratad );
+				return (this.state == DTXEnumState.Enumeratad);
 			}
 		}
-		public bool IsSongListEnumStarted				// 曲リスト探索開始後？(探索完了も含む)
+		public bool IsSongListEnumStarted               // 曲リスト探索開始後？(探索完了も含む)
 		{
 			get
 			{
-				return ( this.state != DTXEnumState.None );
+				return (this.state != DTXEnumState.None);
 			}
 		}
 		public void SongListEnumCompletelyDone()
 		{
 			this.state = DTXEnumState.CompletelyDone;
-			this.Songs管理 = null;						// GCはOSに任せる
+			this.Songs管理 = null;                        // GCはOSに任せる
 		}
-		public bool IsSlowdown							// #PREMOVIE再生中は検索負荷を落とす
+		public bool IsSlowdown                          // #PREMOVIE再生中は検索負荷を落とす
 		{
 			get
 			{
@@ -71,9 +65,9 @@ namespace TJAPlayer3
 			}
 		}
 
-		public void ChangeEnumeratePriority( ThreadPriority tp )
+		public void ChangeEnumeratePriority(ThreadPriority tp)
 		{
-			if ( this.thDTXFileEnumerate != null && this.thDTXFileEnumerate.IsAlive == true )
+			if (this.thDTXFileEnumerate != null && this.thDTXFileEnumerate.IsAlive == true)
 			{
 				this.thDTXFileEnumerate.Priority = tp;
 			}
@@ -91,8 +85,8 @@ namespace TJAPlayer3
 			None,
 			Ongoing,
 			Suspended,
-			Enumeratad,				// 探索完了、現在の曲リストに未反映
-			CompletelyDone			// 探索完了、現在の曲リストに反映完了
+			Enumeratad,             // 探索完了、現在の曲リストに未反映
+			CompletelyDone          // 探索完了、現在の曲リストに反映完了
 		}
 		private DTXEnumState state = DTXEnumState.None;
 
@@ -105,9 +99,9 @@ namespace TJAPlayer3
 			this.Songs管理 = new CSongs管理();
 		}
 
-		public void Init( List<Cスコア> ls, int n )
+		public void Init(List<Cスコア> ls, int n)
 		{
-			if ( state == DTXEnumState.None )
+			if (state == DTXEnumState.None)
 			{
 				this.Songs管理.listSongsDB = ls;
 				this.Songs管理.nSongsDBから取得できたスコア数 = n;
@@ -119,7 +113,7 @@ namespace TJAPlayer3
 		/// </summary>
 		public void StartEnumFromCache()
 		{
-			this.thDTXFileEnumerate = new Thread( new ThreadStart( this.t曲リストの構築1 ) );
+			this.thDTXFileEnumerate = new Thread(new ThreadStart(this.t曲リストの構築1));
 			this.thDTXFileEnumerate.Name = "曲リストの構築";
 			this.thDTXFileEnumerate.IsBackground = true;
 			this.thDTXFileEnumerate.Start();
@@ -135,20 +129,20 @@ namespace TJAPlayer3
 		/// </summary>
 		public void StartEnumFromDisk()
 		{
-			if ( state == DTXEnumState.None || state == DTXEnumState.CompletelyDone )
+			if (state == DTXEnumState.None || state == DTXEnumState.CompletelyDone)
 			{
-				Trace.TraceInformation( "★曲データ検索スレッドを起動しました。" );
-				lock ( this )
+				Trace.TraceInformation("★曲データ検索スレッドを起動しました。");
+				lock (this)
 				{
 					state = DTXEnumState.Ongoing;
 				}
 				// this.autoReset = new AutoResetEvent( true );
 
-				if ( this.Songs管理 == null )		// Enumerating Songs完了後、CONFIG画面から再スキャンしたときにこうなる
+				if (this.Songs管理 == null)       // Enumerating Songs完了後、CONFIG画面から再スキャンしたときにこうなる
 				{
 					this.Songs管理 = new CSongs管理();
 				}
-				this.thDTXFileEnumerate = new Thread( new ThreadStart( this.t曲リストの構築2 ) );
+				this.thDTXFileEnumerate = new Thread(new ThreadStart(this.t曲リストの構築2));
 				this.thDTXFileEnumerate.Name = "曲リストの構築";
 				this.thDTXFileEnumerate.IsBackground = true;
 				this.thDTXFileEnumerate.Priority = System.Threading.ThreadPriority.Lowest;
@@ -162,13 +156,13 @@ namespace TJAPlayer3
 		/// </summary>
 		public void Suspend()
 		{
-			if ( this.state != DTXEnumState.CompletelyDone &&
-				( ( thDTXFileEnumerate.ThreadState & ( System.Threading.ThreadState.Background ) ) != 0 ) )
+			if (this.state != DTXEnumState.CompletelyDone &&
+				((thDTXFileEnumerate.ThreadState & (System.Threading.ThreadState.Background)) != 0))
 			{
 				// this.thDTXFileEnumerate.Suspend();		// obsoleteにつき使用中止
 				this.Songs管理.bIsSuspending = true;
 				this.state = DTXEnumState.Suspended;
-				Trace.TraceInformation( "★曲データ検索スレッドを中断しました。" );
+				Trace.TraceInformation("★曲データ検索スレッドを中断しました。");
 			}
 		}
 
@@ -177,15 +171,15 @@ namespace TJAPlayer3
 		/// </summary>
 		public void Resume()
 		{
-			if ( this.state == DTXEnumState.Suspended )
+			if (this.state == DTXEnumState.Suspended)
 			{
-				if ( ( this.thDTXFileEnumerate.ThreadState & ( System.Threading.ThreadState.WaitSleepJoin | System.Threading.ThreadState.StopRequested ) ) != 0 )	//
+				if ((this.thDTXFileEnumerate.ThreadState & (System.Threading.ThreadState.WaitSleepJoin | System.Threading.ThreadState.StopRequested)) != 0) //
 				{
 					// this.thDTXFileEnumerate.Resume();	// obsoleteにつき使用中止
 					this.Songs管理.bIsSuspending = false;
 					this.Songs管理.AutoReset.Set();
 					this.state = DTXEnumState.Ongoing;
-					Trace.TraceInformation( "★曲データ検索スレッドを再開しました。" );
+					Trace.TraceInformation("★曲データ検索スレッドを再開しました。");
 				}
 			}
 		}
@@ -197,15 +191,15 @@ namespace TJAPlayer3
 		public void WaitUntilSuspended()
 		{
 			// 曲検索が一時中断されるまで待機
-			for ( int i = 0; i < 10; i++ )
+			for (int i = 0; i < 10; i++)
 			{
-				if ( this.state == DTXEnumState.CompletelyDone ||
-					( thDTXFileEnumerate.ThreadState & ( System.Threading.ThreadState.WaitSleepJoin | System.Threading.ThreadState.Background | System.Threading.ThreadState.Stopped ) ) != 0 )
+				if (this.state == DTXEnumState.CompletelyDone ||
+					(thDTXFileEnumerate.ThreadState & (System.Threading.ThreadState.WaitSleepJoin | System.Threading.ThreadState.Background | System.Threading.ThreadState.Stopped)) != 0)
 				{
 					break;
 				}
-				Trace.TraceInformation( "★曲データ検索スレッドの中断待ちです: {0}", this.thDTXFileEnumerate.ThreadState.ToString() );
-				Thread.Sleep( 500 );
+				Trace.TraceInformation("★曲データ検索スレッドの中断待ちです: {0}", this.thDTXFileEnumerate.ThreadState.ToString());
+				Thread.Sleep(500);
 			}
 
 		}
@@ -215,13 +209,13 @@ namespace TJAPlayer3
 		/// </summary>
 		public void Abort()
 		{
-			if ( thDTXFileEnumerate != null )
+			if (thDTXFileEnumerate != null)
 			{
 				thDTXFileEnumerate.Abort();
 				thDTXFileEnumerate = null;
 				this.state = DTXEnumState.None;
 
-				this.Songs管理 = null;					// Songs管理を再初期化する (途中まで作った曲リストの最後に、一から重複して追記することにならないようにする。)
+				this.Songs管理 = null;                    // Songs管理を再初期化する (途中まで作った曲リストの最後に、一から重複して追記することにならないようにする。)
 				this.Songs管理 = new CSongs管理();
 			}
 		}
@@ -245,43 +239,43 @@ namespace TJAPlayer3
 				//-----------------------------
 				TJAPlayer3.stage起動.eフェーズID = CStage.Eフェーズ.起動0_システムサウンドを構築;
 
-				Trace.TraceInformation( "0) システムサウンドを構築します。" );
+				Trace.TraceInformation("0) システムサウンドを構築します。");
 				Trace.Indent();
 
 				try
 				{
 					TJAPlayer3.Skin.bgm起動画面.t再生する();
-					for ( int i = 0; i < TJAPlayer3.Skin.nシステムサウンド数; i++ )
+					for (int i = 0; i < TJAPlayer3.Skin.nシステムサウンド数; i++)
 					{
-						if ( !TJAPlayer3.Skin[ i ].b排他 )	// BGM系以外のみ読み込む。(BGM系は必要になったときに読み込む)
+						if (!TJAPlayer3.Skin[i].b排他)    // BGM系以外のみ読み込む。(BGM系は必要になったときに読み込む)
 						{
-							CSkin.Cシステムサウンド cシステムサウンド = TJAPlayer3.Skin[ i ];
-							if ( !TJAPlayer3.bコンパクトモード || cシステムサウンド.bCompact対象 )
+							CSkin.Cシステムサウンド cシステムサウンド = TJAPlayer3.Skin[i];
+							if (!TJAPlayer3.bコンパクトモード || cシステムサウンド.bCompact対象)
 							{
 								try
 								{
 									cシステムサウンド.t読み込み();
-									Trace.TraceInformation( "システムサウンドを読み込みました。({0})", cシステムサウンド.strファイル名 );
+									Trace.TraceInformation("システムサウンドを読み込みました。({0})", cシステムサウンド.strファイル名);
 									//if ( ( cシステムサウンド == CDTXMania.Skin.bgm起動画面 ) && cシステムサウンド.b読み込み成功 )
 									//{
 									//	cシステムサウンド.t再生する();
 									//}
 								}
-								catch ( FileNotFoundException )
+								catch (FileNotFoundException)
 								{
-									Trace.TraceWarning( "システムサウンドが存在しません。({0})", cシステムサウンド.strファイル名 );
+									Trace.TraceWarning("システムサウンドが存在しません。({0})", cシステムサウンド.strファイル名);
 								}
-								catch ( Exception e )
+								catch (Exception e)
 								{
-									Trace.TraceWarning( e.ToString() );
-									Trace.TraceWarning( "システムサウンドの読み込みに失敗しました。({0})", cシステムサウンド.strファイル名 );
+									Trace.TraceWarning(e.ToString());
+									Trace.TraceWarning("システムサウンドの読み込みに失敗しました。({0})", cシステムサウンド.strファイル名);
 								}
 							}
 						}
 					}
-					lock ( TJAPlayer3.stage起動.list進行文字列 )
+					lock (TJAPlayer3.stage起動.list進行文字列)
 					{
-						TJAPlayer3.stage起動.list進行文字列.Add( "SYSTEM SOUND...OK" );
+						TJAPlayer3.stage起動.list進行文字列.Add("SYSTEM SOUND...OK");
 					}
 				}
 				finally
@@ -291,9 +285,9 @@ namespace TJAPlayer3
 				//-----------------------------
 				#endregion
 
-				if ( TJAPlayer3.bコンパクトモード )
+				if (TJAPlayer3.bコンパクトモード)
 				{
-					Trace.TraceInformation( "コンパクトモードなので残りの起動処理は省略します。" );
+					Trace.TraceInformation("コンパクトモードなので残りの起動処理は省略します。");
 					return;
 				}
 
@@ -301,33 +295,33 @@ namespace TJAPlayer3
 				//-----------------------------
 				TJAPlayer3.stage起動.eフェーズID = CStage.Eフェーズ.起動00_songlistから曲リストを作成する;
 
-				Trace.TraceInformation( "1) songlist.dbを読み込みます。" );
+				Trace.TraceInformation("1) songlist.dbを読み込みます。");
 				Trace.Indent();
 
 				try
 				{
-					if ( !TJAPlayer3.ConfigIni.bConfigIniがないかDTXManiaのバージョンが異なる )
+					if (!TJAPlayer3.ConfigIni.bConfigIniがないかDTXManiaのバージョンが異なる)
 					{
 						CSongs管理 s = new CSongs管理();
-						s = Deserialize( strPathSongList );		// 直接this.Songs管理にdeserialize()結果を代入するのは避ける。nullにされてしまうことがあるため。
-						if ( s != null )
+						s = Deserialize(strPathSongList);       // 直接this.Songs管理にdeserialize()結果を代入するのは避ける。nullにされてしまうことがあるため。
+						if (s != null)
 						{
 							this.Songs管理 = s;
 						}
 
 						int scores = this.Songs管理.n検索されたスコア数;
-						Trace.TraceInformation( "songlist.db の読み込みを完了しました。[{0}スコア]", scores );
-						lock ( TJAPlayer3.stage起動.list進行文字列 )
+						Trace.TraceInformation("songlist.db の読み込みを完了しました。[{0}スコア]", scores);
+						lock (TJAPlayer3.stage起動.list進行文字列)
 						{
-							TJAPlayer3.stage起動.list進行文字列.Add( "SONG LIST...OK" );
+							TJAPlayer3.stage起動.list進行文字列.Add("SONG LIST...OK");
 						}
 					}
 					else
 					{
-						Trace.TraceInformation( "初回の起動であるかまたはDTXManiaのバージョンが上がったため、songlist.db の読み込みをスキップします。" );
-						lock ( TJAPlayer3.stage起動.list進行文字列 )
+						Trace.TraceInformation("初回の起動であるかまたはDTXManiaのバージョンが上がったため、songlist.db の読み込みをスキップします。");
+						lock (TJAPlayer3.stage起動.list進行文字列)
 						{
-							TJAPlayer3.stage起動.list進行文字列.Add( "SONG LIST...SKIPPED" );
+							TJAPlayer3.stage起動.list進行文字列.Add("SONG LIST...SKIPPED");
 						}
 					}
 				}
@@ -342,37 +336,37 @@ namespace TJAPlayer3
 				//-----------------------------
 				TJAPlayer3.stage起動.eフェーズID = CStage.Eフェーズ.起動1_SongsDBからスコアキャッシュを構築;
 
-				Trace.TraceInformation( "2) songs.db を読み込みます。" );
+				Trace.TraceInformation("2) songs.db を読み込みます。");
 				Trace.Indent();
 
 				try
 				{
-					if ( !TJAPlayer3.ConfigIni.bConfigIniがないかDTXManiaのバージョンが異なる )
+					if (!TJAPlayer3.ConfigIni.bConfigIniがないかDTXManiaのバージョンが異なる)
 					{
 						try
 						{
-							this.Songs管理.tSongsDBを読み込む( strPathSongsDB );
+							this.Songs管理.tSongsDBを読み込む(strPathSongsDB);
 						}
 						catch (Exception e)
 						{
-							Trace.TraceError( "songs.db の読み込みに失敗しました。" );
-							Trace.TraceError( e.ToString() );
-							Trace.TraceError( "例外が発生しましたが処理を継続します。 (358800ac-6c52-4381-aa78-740b7383d197)" );
+							Trace.TraceError("songs.db の読み込みに失敗しました。");
+							Trace.TraceError(e.ToString());
+							Trace.TraceError("例外が発生しましたが処理を継続します。 (358800ac-6c52-4381-aa78-740b7383d197)");
 						}
 
-						int scores = ( this.Songs管理 == null ) ? 0 : this.Songs管理.nSongsDBから取得できたスコア数;	// 読み込み途中でアプリ終了した場合など、CDTXMania.Songs管理 がnullの場合があるので注意
-						Trace.TraceInformation( "songs.db の読み込みを完了しました。[{0}スコア]", scores );
-						lock ( TJAPlayer3.stage起動.list進行文字列 )
+						int scores = (this.Songs管理 == null) ? 0 : this.Songs管理.nSongsDBから取得できたスコア数; // 読み込み途中でアプリ終了した場合など、CDTXMania.Songs管理 がnullの場合があるので注意
+						Trace.TraceInformation("songs.db の読み込みを完了しました。[{0}スコア]", scores);
+						lock (TJAPlayer3.stage起動.list進行文字列)
 						{
-							TJAPlayer3.stage起動.list進行文字列.Add( "SONG DATABASE...OK" );
+							TJAPlayer3.stage起動.list進行文字列.Add("SONG DATABASE...OK");
 						}
 					}
 					else
 					{
-						Trace.TraceInformation( "初回の起動であるかまたはDTXManiaのバージョンが上がったため、songs.db の読み込みをスキップします。" );
-						lock ( TJAPlayer3.stage起動.list進行文字列 )
+						Trace.TraceInformation("初回の起動であるかまたはDTXManiaのバージョンが上がったため、songs.db の読み込みをスキップします。");
+						lock (TJAPlayer3.stage起動.list進行文字列)
 						{
-							TJAPlayer3.stage起動.list進行文字列.Add( "SONG DATABASE...SKIPPED" );
+							TJAPlayer3.stage起動.list進行文字列.Add("SONG DATABASE...SKIPPED");
 						}
 					}
 				}
@@ -387,9 +381,9 @@ namespace TJAPlayer3
 			finally
 			{
 				TJAPlayer3.stage起動.eフェーズID = CStage.Eフェーズ.起動7_完了;
-				TimeSpan span = (TimeSpan) ( DateTime.Now - now );
-				Trace.TraceInformation( "起動所要時間: {0}", span.ToString() );
-				lock ( this )							// #28700 2012.6.12 yyagi; state change must be in finally{} for exiting as of compact mode.
+				TimeSpan span = (TimeSpan)(DateTime.Now - now);
+				Trace.TraceInformation("起動所要時間: {0}", span.ToString());
+				lock (this)                         // #28700 2012.6.12 yyagi; state change must be in finally{} for exiting as of compact mode.
 				{
 					state = DTXEnumState.CompletelyDone;
 				}
@@ -420,40 +414,41 @@ namespace TJAPlayer3
 				//-----------------------------
 				//	base.eフェーズID = CStage.Eフェーズ.起動2_曲を検索してリストを作成する;
 
-				Trace.TraceInformation( "enum2) 曲データを検索します。" );
+				Trace.TraceInformation("enum2) 曲データを検索します。");
 				Trace.Indent();
 
 				try
 				{
-					if ( !string.IsNullOrEmpty( TJAPlayer3.ConfigIni.str曲データ検索パス ) )
+					if (!string.IsNullOrEmpty(TJAPlayer3.ConfigIni.str曲データ検索パス))
 					{
-						string[] strArray = TJAPlayer3.ConfigIni.str曲データ検索パス.Split( new char[] { ';' } );
-						if ( strArray.Length > 0 )
+						string[] strArray = TJAPlayer3.ConfigIni.str曲データ検索パス.Split(new char[] { ';' });
+						if (strArray.Length > 0)
 						{
 							// 全パスについて…
-							foreach ( string str in strArray )
+							foreach (string str in strArray)
 							{
 								string path = str;
-								if ( !Path.IsPathRooted( path ) )
+								if (!Path.IsPathRooted(path))
 								{
-									path = TJAPlayer3.strEXEのあるフォルダ + str;	// 相対パスの場合、絶対パスに直す(2010.9.16)
+									path = TJAPlayer3.strEXEのあるフォルダ + str;  // 相対パスの場合、絶対パスに直す(2010.9.16)
 								}
 
-								if ( !string.IsNullOrEmpty( path ) )
+								if (!string.IsNullOrEmpty(path))
 								{
-									Trace.TraceInformation( "検索パス: " + path );
+									Trace.TraceInformation("検索パス: " + path);
 									Trace.Indent();
 
 									try
 									{
-                                        this.Songs管理.t曲を検索してリストを作成する(path, true);
+										this.Songs管理.t曲を検索してリストを作成する(path, true);
+										TJAPlayer3.ConfigIni.eScrollMode = EScrollMode.Normal;
 									}
-									catch ( Exception e )
+									catch (Exception e)
 									{
-										Trace.TraceError( e.ToString() );
-										Trace.TraceError( "例外が発生しましたが処理を継続します。 (105fd674-e722-4a4e-bd9a-e6f82ac0b1d3)" );
-								}
-										finally
+										Trace.TraceError(e.ToString());
+										Trace.TraceError("例外が発生しましたが処理を継続します。 (105fd674-e722-4a4e-bd9a-e6f82ac0b1d3)");
+									}
+									finally
 									{
 										Trace.Unindent();
 									}
@@ -463,12 +458,12 @@ namespace TJAPlayer3
 					}
 					else
 					{
-						Trace.TraceWarning( "曲データの検索パス(TJAPath)の指定がありません。" );
+						Trace.TraceWarning("曲データの検索パス(TJAPath)の指定がありません。");
 					}
 				}
 				finally
 				{
-					Trace.TraceInformation( "曲データの検索を完了しました。[{0}曲{1}スコア]", this.Songs管理.n検索された曲ノード数, this.Songs管理.n検索されたスコア数 );
+					Trace.TraceInformation("曲データの検索を完了しました。[{0}曲{1}スコア]", this.Songs管理.n検索された曲ノード数, this.Songs管理.n検索されたスコア数);
 					Trace.Unindent();
 				}
 				//	lock ( this.list進行文字列 )
@@ -480,24 +475,24 @@ namespace TJAPlayer3
 				#region [ 3) songs.db 情報の曲リストへの反映 ]
 				//-----------------------------
 				//					base.eフェーズID = CStage.Eフェーズ.起動3_スコアキャッシュをリストに反映する;
-				Trace.TraceInformation( "enum3) songs.db の情報を曲リストへ反映します。" );
+				Trace.TraceInformation("enum3) songs.db の情報を曲リストへ反映します。");
 				Trace.Indent();
 
 				try
 				{
-					if ( this.Songs管理.listSongsDB != null )
+					if (this.Songs管理.listSongsDB != null)
 					{
 						this.Songs管理.tスコアキャッシュを曲リストに反映する();
 					}
 				}
-				catch ( Exception e )
+				catch (Exception e)
 				{
-					Trace.TraceError( e.ToString() );
-					Trace.TraceError( "例外が発生しましたが処理を継続します。 (76ae87e7-f737-4dfa-b8ab-5f37a06f74e8)" );
+					Trace.TraceError(e.ToString());
+					Trace.TraceError("例外が発生しましたが処理を継続します。 (76ae87e7-f737-4dfa-b8ab-5f37a06f74e8)");
 				}
 				finally
 				{
-					Trace.TraceInformation( "曲リストへの反映を完了しました。[{0}/{1}スコア]", this.Songs管理.nスコアキャッシュから反映できたスコア数, this.Songs管理.n検索されたスコア数 );
+					Trace.TraceInformation("曲リストへの反映を完了しました。[{0}/{1}スコア]", this.Songs管理.nスコアキャッシュから反映できたスコア数, this.Songs管理.n検索されたスコア数);
 					Trace.Unindent();
 				}
 				//	lock ( this.list進行文字列 )
@@ -512,22 +507,22 @@ namespace TJAPlayer3
 
 				int num2 = this.Songs管理.n検索されたスコア数 - this.Songs管理.nスコアキャッシュから反映できたスコア数;
 
-				Trace.TraceInformation( "{0}, {1}", this.Songs管理.n検索されたスコア数, this.Songs管理.nスコアキャッシュから反映できたスコア数 );
-				Trace.TraceInformation( "enum4) songs.db になかった曲データ[{0}スコア]の情報をファイルから読み込んで反映します。", num2 );
+				Trace.TraceInformation("{0}, {1}", this.Songs管理.n検索されたスコア数, this.Songs管理.nスコアキャッシュから反映できたスコア数);
+				Trace.TraceInformation("enum4) songs.db になかった曲データ[{0}スコア]の情報をファイルから読み込んで反映します。", num2);
 				Trace.Indent();
 
 				try
 				{
 					this.Songs管理.tSongsDBになかった曲をファイルから読み込んで反映する();
 				}
-				catch ( Exception e )
+				catch (Exception e)
 				{
-					Trace.TraceError( e.ToString() );
-					Trace.TraceError( "例外が発生しましたが処理を継続します。 (276bb40f-6406-40c1-9f03-e2a9869dbc88)" );
+					Trace.TraceError(e.ToString());
+					Trace.TraceError("例外が発生しましたが処理を継続します。 (276bb40f-6406-40c1-9f03-e2a9869dbc88)");
 				}
 				finally
 				{
-					Trace.TraceInformation( "曲データへの反映を完了しました。[{0}/{1}スコア]", this.Songs管理.nファイルから反映できたスコア数, num2 );
+					Trace.TraceInformation("曲データへの反映を完了しました。[{0}/{1}スコア]", this.Songs管理.nファイルから反映できたスコア数, num2);
 					Trace.Unindent();
 				}
 				//					lock ( this.list進行文字列 )
@@ -540,21 +535,21 @@ namespace TJAPlayer3
 				//-----------------------------
 				//					base.eフェーズID = CStage.Eフェーズ.起動5_曲リストへ後処理を適用する;
 
-				Trace.TraceInformation( "enum5) 曲リストへの後処理を適用します。" );
+				Trace.TraceInformation("enum5) 曲リストへの後処理を適用します。");
 				Trace.Indent();
 
 				try
 				{
 					this.Songs管理.t曲リストへ後処理を適用する();
 				}
-				catch ( Exception e )
+				catch (Exception e)
 				{
-					Trace.TraceError( e.ToString() );
-					Trace.TraceError( "例外が発生しましたが処理を継続します。 (6480ffa0-1cc1-40d4-9cc9-aceeecd0264b)" );
+					Trace.TraceError(e.ToString());
+					Trace.TraceError("例外が発生しましたが処理を継続します。 (6480ffa0-1cc1-40d4-9cc9-aceeecd0264b)");
 				}
 				finally
 				{
-					Trace.TraceInformation( "曲リストへの後処理を完了しました。" );
+					Trace.TraceInformation("曲リストへの後処理を完了しました。");
 					Trace.Unindent();
 				}
 				//					lock ( this.list進行文字列 )
@@ -567,21 +562,21 @@ namespace TJAPlayer3
 				//-----------------------------
 				//					base.eフェーズID = CStage.Eフェーズ.起動6_スコアキャッシュをSongsDBに出力する;
 
-				Trace.TraceInformation( "enum6) 曲データの情報を songs.db へ出力します。" );
+				Trace.TraceInformation("enum6) 曲データの情報を songs.db へ出力します。");
 				Trace.Indent();
 
 				try
 				{
-					this.Songs管理.tスコアキャッシュをSongsDBに出力する( strPathSongsDB );
+					this.Songs管理.tスコアキャッシュをSongsDBに出力する(strPathSongsDB);
 				}
-				catch ( Exception e )
+				catch (Exception e)
 				{
-					Trace.TraceError( e.ToString() );
-					Trace.TraceError( "例外が発生しましたが処理を継続します。 (a9606e11-33e6-46bc-8c79-738b3524a713)" );
+					Trace.TraceError(e.ToString());
+					Trace.TraceError("例外が発生しましたが処理を継続します。 (a9606e11-33e6-46bc-8c79-738b3524a713)");
 				}
 				finally
 				{
-					Trace.TraceInformation( "songs.db への出力を完了しました。[{0}スコア]", this.Songs管理.nSongsDBへ出力できたスコア数 );
+					Trace.TraceInformation("songs.db への出力を完了しました。[{0}スコア]", this.Songs管理.nSongsDBへ出力できたスコア数);
 					Trace.Unindent();
 				}
 				//					lock ( this.list進行文字列 )
@@ -592,11 +587,11 @@ namespace TJAPlayer3
 
 				//				if ( !bSucceededFastBoot )	// songs2.db読み込みに成功したなら、songs2.dbを新たに作らない
 				#region [ 7) songs2.db への保存 ]		// #27060 2012.1.26 yyagi
-				Trace.TraceInformation( "enum7) 曲データの情報を songlist.db へ出力します。" );
+				Trace.TraceInformation("enum7) 曲データの情報を songlist.db へ出力します。");
 				Trace.Indent();
 
-				SerializeSongList( this.Songs管理, strPathSongList );
-				Trace.TraceInformation( "songlist.db への出力を完了しました。[{0}スコア]", this.Songs管理.nSongsDBへ出力できたスコア数 );
+				SerializeSongList(this.Songs管理, strPathSongList);
+				Trace.TraceInformation("songlist.db への出力を完了しました。[{0}スコア]", this.Songs管理.nSongsDBへ出力できたスコア数);
 				Trace.Unindent();
 				//-----------------------------
 				#endregion
@@ -606,10 +601,10 @@ namespace TJAPlayer3
 			finally
 			{
 				//				base.eフェーズID = CStage.Eフェーズ.起動7_完了;
-				TimeSpan span = (TimeSpan) ( DateTime.Now - now );
-				Trace.TraceInformation( "曲探索所要時間: {0}", span.ToString() );
+				TimeSpan span = (TimeSpan)(DateTime.Now - now);
+				Trace.TraceInformation("曲探索所要時間: {0}", span.ToString());
 			}
-			lock ( this )
+			lock (this)
 			{
 				// state = DTXEnumState.Done;		// DoneにするのはCDTXMania.cs側にて。
 				state = DTXEnumState.Enumeratad;
@@ -621,35 +616,35 @@ namespace TJAPlayer3
 		/// <summary>
 		/// 曲リストのserialize
 		/// </summary>
-		private static void SerializeSongList( CSongs管理 cs, string strPathSongList )
+		private static void SerializeSongList(CSongs管理 cs, string strPathSongList)
 		{
 			bool bSucceededSerialize = true;
 			Stream output = null;
 			try
 			{
-				output = File.Create( strPathSongList );
+				output = File.Create(strPathSongList);
 				BinaryFormatter formatter = new BinaryFormatter();
-				formatter.Serialize( output, cs );
+				formatter.Serialize(output, cs);
 			}
-			catch ( Exception e )
+			catch (Exception e)
 			{
 				bSucceededSerialize = false;
-				Trace.TraceError( e.ToString() );
-				Trace.TraceError( "例外が発生しましたが処理を継続します。 (9ad477a4-d922-412c-b87d-e3a49a608e92)" );
+				Trace.TraceError(e.ToString());
+				Trace.TraceError("例外が発生しましたが処理を継続します。 (9ad477a4-d922-412c-b87d-e3a49a608e92)");
 			}
 			finally
 			{
 				output.Close();
-				if ( !bSucceededSerialize )
+				if (!bSucceededSerialize)
 				{
 					try
 					{
-						File.Delete( strPathSongList );	// serializeに失敗したら、songs2.dbファイルを消しておく
+						File.Delete(strPathSongList);   // serializeに失敗したら、songs2.dbファイルを消しておく
 					}
-					catch ( Exception e )
+					catch (Exception e)
 					{
-						Trace.TraceError( e.ToString() );
-						Trace.TraceError( "例外が発生しましたが処理を継続します。 (62860c67-b44f-46f4-b4fc-999c6fe18cce)" );
+						Trace.TraceError(e.ToString());
+						Trace.TraceError("例外が発生しましたが処理を継続します。 (62860c67-b44f-46f4-b4fc-999c6fe18cce)");
 					}
 				}
 			}
@@ -660,41 +655,41 @@ namespace TJAPlayer3
 		/// </summary>
 		/// <param name="songs管理"></param>
 		/// <param name="strPathSongList"></param>
-		private CSongs管理 Deserialize( string strPathSongList )
+		private CSongs管理 Deserialize(string strPathSongList)
 		{
 			try
 			{
 				#region [ SongListDB(songlist.db)を読み込む ]
 
-			    if (!File.Exists(strPathSongList))
-			    {
-			        return null;
-			    }
+				if (!File.Exists(strPathSongList))
+				{
+					return null;
+				}
 
 				//	byte[] buf = File.ReadAllBytes( SongListDBファイル名 );			// 一旦メモリにまとめ読みしてからdeserializeした方が高速かと思ったら全く変わらなかったので削除
 				//	using ( MemoryStream input = new MemoryStream(buf, false) )
-				using ( Stream input = File.OpenRead( strPathSongList ) )
+				using (Stream input = File.OpenRead(strPathSongList))
 				{
 					try
 					{
 						BinaryFormatter formatter = new BinaryFormatter();
-						return (CSongs管理) formatter.Deserialize( input );
+						return (CSongs管理)formatter.Deserialize(input);
 					}
-					catch ( Exception e )
+					catch (Exception e)
 					{
 						// songs管理 = null;
 
-						Trace.TraceError( e.ToString() );
-						Trace.TraceError( "例外が発生しましたが処理を継続します。 (a4289e34-7140-4b67-b821-3b5370a725e1)" );
+						Trace.TraceError(e.ToString());
+						Trace.TraceError("例外が発生しましたが処理を継続します。 (a4289e34-7140-4b67-b821-3b5370a725e1)");
 					}
 				}
 				#endregion
 			}
 			catch (Exception e)
 			{
-				Trace.TraceError( "songlist.db の読み込みに失敗しました。" );
-				Trace.TraceError( e.ToString() );
-				Trace.TraceError( "例外が発生しましたが処理を継続します。 (5a907ed2-f849-4bc4-acd0-d2a6aa3c9c87)" );
+				Trace.TraceError("songlist.db の読み込みに失敗しました。");
+				Trace.TraceError(e.ToString());
+				Trace.TraceError("例外が発生しましたが処理を継続します。 (5a907ed2-f849-4bc4-acd0-d2a6aa3c9c87)");
 			}
 			return null;
 		}
